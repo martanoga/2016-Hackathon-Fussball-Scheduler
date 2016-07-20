@@ -66,7 +66,7 @@ exports.getChannels = function (userId) {
       id: item.id,
       name: item.name,
       subscribed: usersChannels[item.id] !== undefined,
-      eventState: item.event.state
+      eventInProgress: item.event.state
     };
   });
   return channels;
