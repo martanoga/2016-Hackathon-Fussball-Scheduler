@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app='fussball.scheduler'>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Fussball scheduler</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+</head>
+
+<body>
+    <h1>Fussball scheduler</h1>
+
+    <div class='navigation'>
+        <ul>
+            <li><a ui-sref="channels">Channels</a></li>
+            <li><a ui-sref="signout">Sign out</a></li>
+        </ul>
+    </div>
+    <div ui-view></div>
+
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="javascripts/channels/channels.js"></script>
+    <script src="javascripts/auth/auth.js"></script>
+    <script src="javascripts/app.js"></script>
+</body>
+
+</html>

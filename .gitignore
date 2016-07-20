@@ -5,3 +5,5 @@ repl-temp-*
 
 .vscode
 node_modules
+credentials.js
+public/lib
