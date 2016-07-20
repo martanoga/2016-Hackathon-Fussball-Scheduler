@@ -1,6 +1,19 @@
-<div> {{channel.name}} 
-    <button ng-if="!channel.subscribed" ng-click="subscribe()">Subscribe</button>
-    <button ng-if="channel.subscribed" ng-click="unsubscribe()">Unsubscribe</button>
-    <button ng-if="channel.eventInProgress&&channel.subscribed" ng-disabled="channel.joined" ng-click="joinEvent()">Join</button>
-    <button ng-if="!channel.eventInProgress&&channel.subscribed" ng-click="startEvent()">Start</button>
-</div>
+
+
+ <md-card md-theme="{{getTheme()}}" md-theme-watch>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{channel.name}}</span>
+            <span class="md-subhead">Medium</span>
+          </md-card-title-text>
+          <md-card-title-media>
+            <div class="md-media-md card-media"></div>
+          </md-card-title-media>
+        </md-card-title>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button ng-if="!channel.subscribed" ng-click="subscribe()">Subscribe</md-button>
+          <md-button ng-if="channel.subscribed" ng-click="unsubscribe()">Unsubscribe</md-button>
+          <md-button ng-if="channel.eventInProgress&&channel.subscribed" ng-disabled="channel.joined" ng-click="joinEvent()">Join</md-button>
+          <md-button ng-if="!channel.eventInProgress&&channel.subscribed" ng-click="startEvent()">Start</md-button>
+        </md-card-actions>
+</md-card>

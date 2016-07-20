@@ -1,9 +1,10 @@
 angular.module('fussball.scheduler', [
     'ui.router',
     'fussball.scheduler.auth',
-    'fussball.scheduler.channels'
+    'fussball.scheduler.channels',
+    'ngMaterial'
 ])
-    .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $mdThemingProvider) {
         $urlRouterProvider.otherwise('/channels');
 
         $stateProvider
@@ -21,12 +22,22 @@ angular.module('fussball.scheduler', [
                 templateUrl: 'javascripts/channels/channels.html',
                 controller: 'ChannelsController',
                 resolve: {
-                    channels: function(Channels){
+                    channels: function (Channels) {
                         return Channels.getAll();
                     },
-                    notifications: function(Notifications){
+                    notifications: function (Notifications) {
                         return Notifications.getAll();
                     }
                 }
             })
+
+        $mdThemingProvider.theme('dark-grey').backgroundPalette('grey').dark();
+        $mdThemingProvider.theme('dark-orange').backgroundPalette('orange').dark();
+        $mdThemingProvider.theme('dark-green').backgroundPalette('green').dark();
+        $mdThemingProvider.theme('dark-blue').backgroundPalette('blue').dark();
     })
+    .controller('NagigationCtrl', AppCtrl);
+
+function AppCtrl($scope) {
+    $scope.currentNavItem = 'page2';
+  }

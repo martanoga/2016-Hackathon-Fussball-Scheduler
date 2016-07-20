@@ -1,7 +1,7 @@
 angular.module('fussball.scheduler.channels', [])
 
   .controller('ChannelsController', function ($scope, channels, Channels, notifications, Notifications) {
-
+    $scope.currentNavItem = 'page1';
     console.log('Hello from channels controller');
     $scope.channels = channels;
     $scope.notifications = notifications;
@@ -14,6 +14,18 @@ angular.module('fussball.scheduler.channels', [])
       }
     }
 
+    $scope.getTheme = function () {
+      if (this.channel.subscribed) {
+        if (this.channel.eventInProgress) {
+          if (this.channel.joined) {
+            return 'dark-green';
+          }
+          return 'dark-orange';
+        }
+        return 'default';
+      }
+      return 'dark-grey';
+    }
     $scope.subscribe = function () {
       console.log("Subscribe!", this.channel.name);
       //TBD: post to server
