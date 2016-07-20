@@ -13,6 +13,10 @@ var Users = [
   {
     id: '007',
     channels: { '2': '2' }
+  },
+  {
+    id: '0001',
+    channels: { }
   }
 ];
 
@@ -71,22 +75,23 @@ exports.getChannels = function (userId) {
 
 exports.joinChannel = function (channelId, userId) {
 
-  var index = _.findIndex(Users, { id: userId });
+  var userIndex = _.findIndex(Users, { id: userId });
 
-  if (index === -1) {
+  if (userIndex === -1) {
     console.log('User needs to be created!');
     return false;
   }
 
-  var indexChannel = _.findIndex(Channels, { id: channelId });
+   var channelIndex = _.findIndex(Channels, { id: channelId });
 
-  if (indexChannel === -1) {
+  if (channelIndex === -1) {
+    console.log('Channel needs to be created!');
     return false;
   }
 
-  Users[userId].channels[channelId] = channelId;
+  Users[userIndex].channels[channelId] = channelId;
 
-  return ture;
+  return true;
 }
 
 exports.serialize = function (obj, dest) {
