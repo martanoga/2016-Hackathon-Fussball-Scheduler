@@ -3,19 +3,19 @@ var _ = require('underscore');
 var Users = [
   {
     id: '1235',
-    channles: ['1', '2']
+    channels: { '1': '1', '2': '2' }
   },
   {
     id: '123456789',
-    channles: ['1', '2']
+    channels: { '1': '1', '2': '2' }
   },
   {
     id: '007',
-    channles: ['2']
+    channels: { '2': '2' }
   }
 ];
 
-var Channles = [
+var Channels = [
   {
     id: '1',
     name: 'fussball',
@@ -48,19 +48,44 @@ var Channles = [
 
 exports.getChannels = function (userId) {
 
-  var index = _.indexOf(Users, function (item) {
-    return item.id === userId;
-  });
+  var index = _.findIndex(Users, { id: userId });
+
+  if (index === -1) {
+    return {};
+  }
 
   var usersChannels = Users[index].channels;
 
   var channels = _.map(Channels, function (item) {
     return {
-      id : item.id,
-      name : item.name,
-      subscribed : _.indexOf(usersChannels, item.id) > 0,
-      eventState : item.event.state
+      id: item.id,
+      name: item.name,
+      subscribed: usersChannels[item.id] !== undefined,
+      eventState: item.event.state
     };
   });
   return channels;
 }
+
+
+exports.joinChannel = function (channelId, userId) {
+
+  var index = _.findIndex(Users, { id: userId });
+
+  if (index === -1) {
+    console.log('User needs to be created!');
+    return false;
+  }
+
+  var indexChannel = _.findIndex(Channels, { id: channelId });
+
+  if (indexChannel === -1) {
+    return false;
+  }
+
+  Users[userId].channels[channelId] = channelId;
+
+  return ture;
+}
+
+
