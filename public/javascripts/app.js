@@ -4,7 +4,7 @@ angular.module('fussball.scheduler', [
     'fussball.scheduler.channels'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
-        $urlRouterProvider.otherwise('/links');
+        $urlRouterProvider.otherwise('/channels');
 
         $stateProvider
             .state('signin', {
@@ -23,6 +23,9 @@ angular.module('fussball.scheduler', [
                 resolve: {
                     channels: function(Channels){
                         return Channels.getAll();
+                    },
+                    notifications: function(Notifications){
+                        return Notifications.getAll();
                     }
                 }
             })
