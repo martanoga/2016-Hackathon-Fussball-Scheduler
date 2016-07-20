@@ -11,3 +11,11 @@ var config = {
 exports.getADSKAuthPath = function () {
   return config.ADSK_PATH_START + config.ADSK_SERVER + config.ADSK_PATH_END + '/authentication/' + config.ADSK_VERSION + '/authorize';
 };
+
+exports.getADSKGetTokenPath = function () {
+  return config.ADSK_PATH_START + config.ADSK_SERVER + config.ADSK_PATH_END + '/authentication/' + config.ADSK_VERSION + '/gettoken';
+};
+
+exports.getADSKGetUserInfoPath = function () {
+  return config.ADSK_PATH_START + config.ADSK_SERVER + config.ADSK_PATH_END + '/userprofile/' + config.ADSK_VERSION + '/users/@me';
+};
