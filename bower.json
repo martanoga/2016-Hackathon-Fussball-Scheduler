@@ -1,0 +1,22 @@
+{
+  "name": "fussball-scheduler",
+  "description": "\"fussball scheduler\"",
+  "main": "public/index.html",
+  "authors": [
+    "sleczkt <Tomasz.Sleczka@autodesk.com>"
+  ],
+  "license": "unlicensed",
+  "homepage": "https://github.com/martanoga/2016-Hackathon-Fussball-Scheduler",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-ui-router": "^0.3.1"
+  }
+}
