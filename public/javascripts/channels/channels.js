@@ -18,13 +18,13 @@ angular.module('fussball.scheduler.channels', [])
       if (this.channel.subscribed) {
         if (this.channel.eventInProgress) {
           if (this.channel.joined) {
-            return 'dark-green';
+            return 'green';
           }
-          return 'dark-orange';
+          return 'orange';
         }
         return 'default';
       }
-      return 'dark-grey';
+      return 'grey';
     }
     $scope.subscribe = function () {
       console.log("Subscribe!", this.channel.name);

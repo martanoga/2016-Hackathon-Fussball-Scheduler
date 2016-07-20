@@ -1,15 +1,25 @@
-<h2>Channels</h2>
 <div id="subscribed">
-    <h3>Subscribed</h3>
-    <channel ng-repeat="channel in channels | filter:{'subscribed': true}" id="subscribed"></channel>
-</div>
-<div id="unsubscribed">
-    <h3>Unsubscribed</h3>
-    <md-content class="md-padding" layout-xs="column" layout="row">
-        <channel ng-repeat="channel in channels | filter:{'subscribed': false}" id="subscribed"></channel>
+    <h3 class="md-title md-accent">Subscribed</h3>
+    <md-divider></md-divider>
+    <md-content class="md-padding" layout="row">
+
+        <channel flex="25" ng-repeat="channel in channels | filter:{'subscribed': true} as filtered" id="subscribed"></channel>
+        <md-content ng-if="!filtered.length" flex layout-padding>Subscribe to a chanell to be notified when something interesing is happening
+        </md-content>
     </md-content>
 </div>
 
 
-<button ng-click="cancelEvent()">Cancel event</button>
-<button ng-click="makeEventHappen()">Event happens!</button>
+<div id="unsubscribed">
+    <h3 class="md-title">Unsubscribed</h3>
+    <md-divider></md-divider>
+    <md-content class="md-padding" layout="row">
+
+        <channel flex="25" ng-repeat="channel in channels | filter:{'subscribed': false}" id="subscribed"></channel>
+
+    </md-content>
+</div>
+
+
+<!--button ng-click="cancelEvent()">Cancel event</button>
+<button ng-click="makeEventHappen()">Event happens!</button-->

@@ -31,10 +31,9 @@ angular.module('fussball.scheduler', [
                 }
             })
 
-        $mdThemingProvider.theme('dark-grey').backgroundPalette('grey').dark();
-        $mdThemingProvider.theme('dark-orange').backgroundPalette('orange').dark();
-        $mdThemingProvider.theme('dark-green').backgroundPalette('green').dark();
-        $mdThemingProvider.theme('dark-blue').backgroundPalette('blue').dark();
+        $mdThemingProvider.theme('grey').backgroundPalette('grey').dark();
+        $mdThemingProvider.theme('orange').backgroundPalette('orange').dark();
+        $mdThemingProvider.theme('green').backgroundPalette('green').dark();
     })
     .controller('NagigationCtrl', AppCtrl);
 

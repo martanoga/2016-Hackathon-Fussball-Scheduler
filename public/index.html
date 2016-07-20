@@ -16,19 +16,17 @@
 </head>
 
 <body>
-    
-    <div layout="row" layout-wrap>
-        <div flex="auto">
-            <h1>Fussball scheduler</h1>
-        </div>
-        <div flex="nogrow">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>Fussball scheduler</span>
+            <span flex></span>
             <a ui-sref="signout">
                 <md-button class="md-raised md-warn">Log Out</md-button>
             </a>
         </div>
-    </div>
+    </md-toolbar>
 
-    <div ui-view></div>
+    <div id="app" ui-view></div>
 
     <script src="javascripts/channels/channels.js"></script>
     <script src="javascripts/auth/auth.js"></script>
@@ -38,7 +36,7 @@
 </html>
 
 
-            <!--div layout layout-padding layout-align="begin end">
+<!--div layout layout-padding layout-align="begin end">
         Fussball scheduler
     </div>
     <div layout layout-padding layout-align="end end">
