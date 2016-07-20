@@ -1,11 +1,14 @@
 // white listed keys 
 var credentials = {
-    CLIENT_ID: '',
-    CLIENT_SECRET: '',
-    REDIRECT_URL: '',
-    // Notifications channel API keys (private/one per company)
-    SUBSCRIBE_KEY: '',
-    CIPHER_KEY: ''
+
+  AUTH_CLIENT_ID : '',
+  AUTH_CLIENT_SECRET : '',
+  AUTH_REDIRECT_URI : '',
+  CLIENT_ID : '',
+  CLIENT_SECRET : '',
+  REDIRECT_URI : '',
+  SUBSCRIBE_KEY : '',
+  CIPHER_KEY : ''
 }
 
-modeule.exports = credentials;
+module.exports = credentials;
