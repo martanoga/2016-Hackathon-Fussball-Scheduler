@@ -13,6 +13,10 @@ var Users = [
   {
     id: '007',
     channels: { '2': '2' }
+  },
+  {
+    id: '0001',
+    channels: { }
   }
 ];
 
@@ -75,6 +79,13 @@ exports.joinChannel = function (channelId, userId) {
 
   if (userIndex === -1) {
     console.log('User needs to be created!');
+    return false;
+  }
+
+   var channelIndex = _.findIndex(Channels, { id: channelId });
+
+  if (channelIndex === -1) {
+    console.log('Channel needs to be created!');
     return false;
   }
 
