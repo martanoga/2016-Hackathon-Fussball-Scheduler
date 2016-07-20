@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var fs = require('fs');
 
 var Users = [
   {
@@ -88,4 +89,24 @@ exports.joinChannel = function (channelId, userId) {
   return ture;
 }
 
+exports.serialize = function (obj, dest) {
+  var text = JSON.stringify(obj);
+  fs.writeFile(dest, text, { 'encoding': 'utf8' }, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
 
+    }
+  });
+}
+
+exports.deserialize = function (source) {
+  fs.readFile(source, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      var obj = JSON.parse(data);
+      return obj;
+    }
+  });
+}

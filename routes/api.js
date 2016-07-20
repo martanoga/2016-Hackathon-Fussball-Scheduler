@@ -10,8 +10,9 @@ router.get('/channels', function (req, res, next) {
 });
 
 router.post('/channels/join', function (req, res, next) {
-  var channelId = req.data.channelId;
-  var userId = "007";// req.data.userId;
+
+  var channelId = req.body.channelId;
+  var userId = "007";// get from session
   if (database.joinChannel(channelId, userId)) {
     res.send(200);
   } else {
