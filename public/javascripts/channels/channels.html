@@ -1,1 +1,12 @@
-<div>Channels</div>
+<h2>Channels</h2>
+<div id="subscribed">
+<h3>Subscribed</h3>
+<channel ng-repeat="channel in channels | filter:{'subscribed': true}" id="subscribed"></channel>
+</div>
+<div id="unsubscribed"> 
+<h3>Unsubscribed</h3>
+<channel ng-repeat="channel in channels | filter:{'subscribed': false}" id="subscribed"></channel>
+</div>
+
+<button ng-click="cancelEvent()">Cancel event</button>
+<button ng-click="makeEventHappen()">Event happens!</button>

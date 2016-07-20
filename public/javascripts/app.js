@@ -19,6 +19,11 @@ angular.module('fussball.scheduler', [
             .state('channels', {
                 url: '/channels',
                 templateUrl: 'javascripts/channels/channels.html',
-                controller: 'ChannelsController'
+                controller: 'ChannelsController',
+                resolve: {
+                    channels: function(Channels){
+                        return Channels.getAll();
+                    }
+                }
             })
     })
