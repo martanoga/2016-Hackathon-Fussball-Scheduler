@@ -1,6 +1,6 @@
 angular.module('fussball.scheduler.channels', [])
 
-  .controller('ChannelsController', function ($scope, channels, Channels, notifications, Notifications) {
+  .controller('ChannelsController', function ($http, $scope, channels, Channels, notifications, Notifications) {
     $scope.currentNavItem = 'page1';
     console.log('Hello from channels controller');
     $scope.channels = channels;
@@ -28,12 +28,17 @@ angular.module('fussball.scheduler.channels', [])
     }
     $scope.subscribe = function () {
       console.log("Subscribe!", this.channel.name);
-      //TBD: post to server
-      //this should be done in callabck
-      this.channel.subscribed = true;
-      Notifications.subscribe(this.channel.id, function (m) {
-        $scope.subscribeCallback(m, this.channel.id);
-      });
+      $http({
+        method: 'POST',
+        url: '/api/channels/join',
+        data: { channelId : this.channel.id }
+      })
+        .then(function (resp) {
+          this.channel.subscribed = true;
+          Notifications.subscribe(this.channel.id, function (m) {
+            $scope.subscribeCallback(m, this.channel.id);
+          });
+        });
     };
     $scope.unsubscribe = function () {
       console.log("Unsubscribe!", this.channel.name);
@@ -110,28 +115,14 @@ angular.module('fussball.scheduler.channels', [])
     var channels = [];
     return {
       getAll: function () {
-        channels = [{
-          name: "Piłkarzyki",
-          id: "0-adsf-adsf",
-          eventInProgress: false,
-          subscribed: false
-        },
-          {
-            name: "Pizza",
-            id: "1-adsf-adsf",
-            eventInProgress: false,
-            subscribed: false
-          }
-        ];
-        console.log('hello from factory channels');
-        return channels;
-        //   return $http({
-        //     method: 'GET',
-        //     url: '/api/links'
-        //   })
-        //     .then(function (resp) {
-        //       return resp.data;
-        //     });
+        return $http({
+          method: 'GET',
+          url: '/api/channels?userId=123456789'
+        })
+          .then(function (resp) {
+            return resp.data;
+          });
+
       },
       onEventCanceled: function (channelId) {
         for (var i = 0; i < channels.length; i++) {
