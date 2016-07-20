@@ -53,7 +53,9 @@ router.get('/authorization', function (req, res, next) {
             console.log(error2);
           } else {
             if (response2.statusCode === 200) {
-              setSessionUser(req, res, JSON.parse(response2.body).userName);
+              setSessionUser(req, res, JSON.parse(response2.body).userId); //JSON.parse(response2.body).userName
+              //res.query.write(token);
+              res.redirect('/#/token/');
             }
           }
         });
@@ -64,11 +66,14 @@ router.get('/authorization', function (req, res, next) {
 
 });
 
-var setSessionUser = function (req, res, username) {
-  req.session.regenerate(function () {
-    req.session.user = username;
-    res.redirect('/');
-  });
+var setSessionUser = function (req, res, userId) {
+
+  req.session.userId = userId;
+
+  // req.session.regenerate(function () {
+  //   req.session.user = username;
+  //   res.redirect('/');
+  // });
 }
 
 module.exports = router;
