@@ -37,6 +37,9 @@ router.post('/channel/joinevent', function (req, res, next) {
 
 });
 
+router.get('/token', function (req, res, next) {
+  res.send(200, req.session.token);
+});
 
 function getUserId(req){
   return global.userId;

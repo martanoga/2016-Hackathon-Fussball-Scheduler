@@ -26,7 +26,7 @@ var Channels = [
     name: 'fussball',
     event: {
       state: 0, // ACTIVE = 1, 
-      aurhor: '1235',
+      author: '1235',
       timeout: 1234567890123,
       maxUsers: 4,
       listOfUsers: [
@@ -39,7 +39,7 @@ var Channels = [
     name: 'pizza',
     event: {
       state: 0, // ACTIVE = 1, 
-      aurhor: '1235',
+      author: '1235',
       timeout: 1234567890123,
       maxUsers: 1000,
       listOfUsers: [
@@ -70,7 +70,7 @@ exports.getChannels = function (userId) {
     };
   });
   return channels;
-}
+};
 
 
 exports.joinChannel = function (channelId, userId) {
@@ -92,11 +92,99 @@ exports.joinChannel = function (channelId, userId) {
   Users[userIndex].channels[channelId] = channelId;
 
   return true;
+};
+
+exports.addUser = function(userId){
+  
+  var userIndex = _.findIndex(Users, { id: userId });
+  if (userIndex === -1) {
+    //   { id: '1235', channels: { '1': '1', '2': '2' } },
+    Users.push({id: userId, channels: {}});
+    return true;
+  }
+  return false;
 }
 
-exports.serialize = function (obj, dest) {
+
+exports.startEvent = function(userId,channelId,newEvent){
+  var userIndex = _.findIndex(Users, { id: newEvent.author });
+  if (userIndex === -1) {
+    console.log('User needs to be created!');
+    return false;
+  }
+
+  var channelIndex = _.findIndex(Channels, { id: channelId });
+  if (channelIndex === -1) {
+    console.log('Channel needs to be created!');
+    return false;
+  }
+
+  if( Users[newEvent.author].channels[channelId] && !Channels[channelIndex].event.state){
+    Channels[channelIndex].event = newEvent;
+    Channels[channelIndex].event.state = 1;
+    Channels[channelIndex].event.author = userId;
+    Channels[channelIndex].event.listOfUsers = [];
+  }
+  else {
+    console.log('event is already in progress');
+    return false;
+  }
+};
+
+exports.joinEvent = function(channelId){
+  var userIndex = _.findIndex(Users, { id: newEvent.author });
+  if (userIndex === -1) {
+    console.log('User needs to be created!');
+    return false;
+  }
+
+  var channelIndex = _.findIndex(Channels, { id: channelId });
+  if (channelIndex === -1) {
+    console.log('Channel needs to be created!');
+    return false;
+  }
+
+  if( Users[newEvent.author].channels[channelId] && Channels[channelIndex].event.state){
+    Channels[channelIndex].event.listOfUsers.push(userId);
+  }
+  else {
+    console.log('event not started yet');
+    return false;
+  }
+};
+
+
+  //   newEvent: {
+  //     timeout: 1234567890123,
+  //     maxUsers: 1000,
+
+  //   }
+
+
+  // {
+  //   id: '2',
+  //   name: 'pizza',
+  //   event: {
+  //     state: 0, // ACTIVE = 1, 
+  //     author: '1235',
+  //     timeout: 1234567890123,
+  //     maxUsers: 1000,
+  //     listOfUsers: [
+  //       '1235',
+  //       '123456789'
+  //     ]
+  //   }
+
+
+
+
+
+
+
+
+function serialize(obj, path) {
   var text = JSON.stringify(obj);
-  fs.writeFile(dest, text, { 'encoding': 'utf8' }, function (err) {
+  fs.writeFile(path, text, { 'encoding': 'utf8' }, function (err) {
     if (err) {
       console.log(err);
     } else {
@@ -105,8 +193,8 @@ exports.serialize = function (obj, dest) {
   });
 }
 
-exports.deserialize = function (source) {
-  fs.readFile(source, (err, data) => {
+function deserialize(path) {
+  fs.readFile(path, (err, data) => {
     if (err) {
       console.log(err);
     } else {

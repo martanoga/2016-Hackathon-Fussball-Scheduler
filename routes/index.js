@@ -29,7 +29,7 @@ router.get('/authorization', function (req, res, next) {
   };
 
   request({
-    url: 'https://developer.api.autodesk.com/authentication/v1/gettoken', //URL to hit
+    url: config.getADSKGetTokenPath(), //URL to hit
     //qs: , //Query string data
     method: 'POST',
     headers: {
@@ -39,11 +39,13 @@ router.get('/authorization', function (req, res, next) {
   }, function (error, response, body) {
     if (error) {
       console.log(error);
+      res.status = 400;
+      res.redirect('/loginAutodesk');
     } else {
       if (response.statusCode === 200) {
         var token = JSON.parse(response.body).access_token;
         request({
-          url: 'https://developer.api.autodesk.com/userprofile/v1/users/@me',
+          url: config.getADSKGetUserInfoPath(),
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + token
@@ -51,11 +53,11 @@ router.get('/authorization', function (req, res, next) {
         }, function (error2, response2, body2) {
           if (error2) {
             console.log(error2);
+            res.status = 400;
+            res.redirect('/loginAutodesk');
           } else {
             if (response2.statusCode === 200) {
-              setSessionUser(req, res, JSON.parse(response2.body).userId); //JSON.parse(response2.body).userName
-              //res.query.write(token);
-              res.redirect('/#/token/');
+              setSessionUser(req, res, token, JSON.parse(response2.body).userId); //JSON.parse(response2.body).userName
             }
           }
         });
@@ -66,14 +68,12 @@ router.get('/authorization', function (req, res, next) {
 
 });
 
-var setSessionUser = function (req, res, userId) {
+var setSessionUser = function (req, res, token, userId) {
 
-  req.session.userId = userId;
-
-  // req.session.regenerate(function () {
-  //   req.session.user = username;
-  //   res.redirect('/');
-  // });
+  // req.session.userId = userId;
+  // req.session.token = token;
+  res.status = 200;
+  res.json({token: token});
 }
 
 module.exports = router;
