@@ -54,7 +54,7 @@ function getToken() {
 }
 
 
-function checkChannel(channelName, maxUsers) {
+function checkChannel(channelName, minUsers, maxUsers) {
 
   //$http.get(tokenUrl)
   getToken()
@@ -70,11 +70,11 @@ function checkChannel(channelName, maxUsers) {
       },
         function (error, response, body) {
           if (response.statusCode === 404) {
-            createChannel(channelName, maxUsers, accessToken);
+            createChannel(channelName, minUsers, maxUsers, accessToken);
           } else {
             //channel exists - ok, maybe update needed...
             var channelId = JSON.parse(body).Channel;
-            database.createChannel(channelId, channelName, maxUsers);
+            database.createChannel(channelId, channelName, minUsers, maxUsers);
           }
         }
       );
@@ -82,7 +82,7 @@ function checkChannel(channelName, maxUsers) {
 };
 
 
-function createChannel(channelName, maxUsers, token) {
+function createChannel(channelName, minUsers, maxUsers, token) {
 
   var url = config.getADSKChannelPath();
 
@@ -109,7 +109,7 @@ function createChannel(channelName, maxUsers, token) {
         } else {
           response.statusCode = 200;
           var channelId = body.channelId;
-          database.createChannel(channelId, channelName, maxUsers);
+          database.createChannel(channelId, channelName, minUsers, maxUsers);
         }
       }
     }

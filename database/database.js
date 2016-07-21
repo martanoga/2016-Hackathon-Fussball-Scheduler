@@ -66,7 +66,7 @@ exports.useOrCreateUser = function (userId, token) {
 }
 
 // {"id":"1","name":"fussball","event":{"state":0,"author":"","timeout":0,"maxUsers":4,"listOfUsers":[]}}
-exports.createChannel = function (channelId, name, maxUsers) {
+exports.createChannel = function (channelId, name, minUsers, maxUsers) {
   readDatabase();
   var channelIndex = _.findIndex(Data.Channels, { id: channelId });
   var added = false;
@@ -74,10 +74,11 @@ exports.createChannel = function (channelId, name, maxUsers) {
     channelIndex = _.findIndex(Data.Channels, { name: name });
     if (channelIndex === -1) {
       var added = true;
-      var channel = { id: channelId, name: name, event: { state: 0, author: '', timeout: 0, maxUsers: maxUsers, listOfUsers: [] } };
+      var channel = { id: channelId, name: name, event: { state: 0, author: '', timeout: 0, minUsers : minUsers, maxUsers: maxUsers, listOfUsers: [] } };
       Data.Channels.push(channel);
     } else {
       Data.Channels[channelIndex].id = channelId;
+      Data.Channels[channelIndex].event.minUsers = minUsers;
       Data.Channels[channelIndex].event.maxUsers = maxUsers;
     }
   }
@@ -86,7 +87,7 @@ exports.createChannel = function (channelId, name, maxUsers) {
   return added;
 }
 
-exports.startEvent = function (userId, channelId, timeout, maxUsers) {
+exports.startEvent = function (userId, channelId, timeout, minUsers, maxUsers) {
   readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
@@ -116,6 +117,7 @@ exports.startEvent = function (userId, channelId, timeout, maxUsers) {
   Data.Channels[channelIndex].event.state = 1;
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
+  Data.Channels[channelIndex].event.minUsers = minUsers,
   Data.Channels[channelIndex].event.maxUsers = maxUsers,
   Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
