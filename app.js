@@ -57,6 +57,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//startup.checkchannel('fussball', function() {});
+// startup.CheckChannel('fussball');
+// startup.CheckChannel('pizza');
 
 module.exports = app;

@@ -20,13 +20,11 @@ function attachToken(xhr) {
 
 
 
-
-
 var accessToken;
 
 function getToken() {
 
-  var url = 'https://developer-stg.api.autodesk.com/authentication/v1/authenticate';
+  var url = config.getADSKAuthenticatePath();
   var token;
 
   return new Promise(function (resolve, reject) {
@@ -62,13 +60,13 @@ function getToken() {
 }
 
 
-function checkChannel(channelName, callback) {
+function checkChannel(channelName) {
 
   //$http.get(tokenUrl)
   getToken()
     .then(function (data) {
       accessToken = data;
-      var url = 'https://developer-stg.api.autodesk.com/notifications/v1/channel/' + channelName;
+      var url = config.getADSKChannelPath() + channelName;
       request.get({
         url: url,
         headers: {
@@ -80,10 +78,9 @@ function checkChannel(channelName, callback) {
           if (response.statusCode === 404) {
             createChannel(channelName, accessToken);
           } else {
-            //channel exists - ok
+            //channel exists - ok, maybe update needed...
             var channelId = JSON.parse(body).Channel;
-            
-            //deleteChannel(channelName, accessToken);
+            database.updateChannel(channelName, channelId);
           }
         }
       );
@@ -91,11 +88,9 @@ function checkChannel(channelName, callback) {
 };
 
 
-
-
 function createChannel(channelName, token) {
 
-  var url = 'https://developer-stg.api.autodesk.com/notifications/v1/channel';
+  var url = config.getADSKChannelPath();
 
   var data = JSON.stringify({
     channelName: channelName,
@@ -116,10 +111,11 @@ function createChannel(channelName, token) {
         response.statusCode = 400;
       } else {
         if (response.statusCode === 409) {
-
+          //already exists
         } else {
-
           response.statusCode = 200;
+          var channelId = body.channelId;
+          database.updateChannel(channelName, channelId);
         }
       }
     }
@@ -127,10 +123,8 @@ function createChannel(channelName, token) {
 };
 
 
-
-
 function deleteChannel(channelName, token) {
-  var url = 'https://developer-stg.api.autodesk.com/notifications/v1/channel' + channelName;
+  var url = config.getADSKChannelPath() + channelName;
 
   request.delete({
     url: url,
@@ -152,8 +146,5 @@ function deleteChannel(channelName, token) {
 
 
 
-exports.gettoken = getToken;
 
-exports.checkchannel = checkChannel;
-
-exports.deletechannel = deleteChannel;
+exports.CheckChannel = checkChannel;

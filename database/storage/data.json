@@ -1,1 +1,0 @@
-{"Users":[{"id":"1235","channels":{"1":"1","2":"2"},"token":""},{"id":"7HB9LEG49LFD","token":"2pzVY0sfv4o0Oh6mFDaQMKSU8bdw","channels":{"1":"1"}}],"Channels":[{"id":"1","name":"fussball","event":{"state":0,"author":"","timeout":0,"maxUsers":4,"listOfUsers":[]}},{"id":"2","name":"pizza","event":{"state":0,"author":"","timeout":0,"maxUsers":1000,"listOfUsers":[]}}]}
