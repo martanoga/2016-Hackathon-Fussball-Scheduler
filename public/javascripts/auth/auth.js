@@ -2,6 +2,12 @@ angular.module('fussball.scheduler.auth', [])
 
   .controller('AuthController', function ($scope) {
     console.log('Hello from auth controller');
+    $scope.authenticationInProgress = false;
+
+    $scope.startAuthentication = function(){
+      $scope.authenticationInProgress = true;
+      window.location = '/loginAutodesk';
+    }
   })
   .factory('Auth', function ($http, $location) {
 

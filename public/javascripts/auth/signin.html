@@ -1,7 +1,5 @@
+<div layout layout-padding style="height:300px" layout-align="center center">
 
-
-<div layout layout-padding layout-align="center center" style="height:200px">
-    <a href="/loginAutodesk">
-        <md-button class="md-raised md-primary">Sign in with your Autodesk Account</md-button>
-    </a>
+    <md-button ng-if="!authenticationInProgress" class="md-raised md-primary" ng-click="startAuthentication()">Sign in with your Autodesk Account</md-button>   
+    <md-progress-circular ng-if="authenticationInProgress" md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 </div>

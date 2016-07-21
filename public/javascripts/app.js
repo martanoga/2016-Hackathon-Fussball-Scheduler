@@ -57,8 +57,8 @@ angular.module('fussball.scheduler', [
             request: function (object) {
                 var userData = JSON.parse($window.localStorage.getItem('fussball.scheduler'));
                 if (userData) {
-                    object.url += object.url.indexOf('?') == -1 ? '?' : "#";
-                    object.url += "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
+                    object.url += object.url.indexOf('?') == -1 ? '?' : "&";
+                    object.url += "userId=" + userData.userId + "&accessToken=" + userData.accessToken;
                 }
                 return object;
             }
