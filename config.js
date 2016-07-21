@@ -22,5 +22,5 @@ exports.getADSKGetUserInfoPath = function () {
 };
 
 exports.getDBPath = function () {
-  return config._DB;
+  return config.DB;
 };

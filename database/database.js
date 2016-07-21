@@ -176,9 +176,9 @@ exports.getDataBaseContent = function () {
 }
 
 function saveDatabase () {
-  fs.writeFileSynch(config.getDBPath(),JSON.stringify(Data), 'utf8');
+  fs.writeFileSync(config.getDBPath(),JSON.stringify(Data), 'utf8');
 };
 
 function readDatabase() {
-  return JSON.parse(fs.readFileSynch(config.getDBPath(),'utf8'));
+  return JSON.parse(fs.readFileSync(config.getDBPath(),'utf8'));
 };

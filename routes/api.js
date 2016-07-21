@@ -62,12 +62,12 @@ router.post('/fake-login', function (req, res, next) {
 
 
 function setUserId(userId, req) {
-  database.addUser(userId);
-  global.userId = req.session.userId;
+  database.useOrCreateUser(userId,userId);
+  global.userId = userId;
 }
 
 function getUserId(req) {
-  return req.query.userId;
+  return global.userId;
 }
 
 module.exports = router;
