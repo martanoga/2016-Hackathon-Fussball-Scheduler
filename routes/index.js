@@ -70,14 +70,10 @@ router.get('/authorization', function (req, res, next) {
 
 var setSessionUser = function (req, res, token, userId) {
 
-  req.session.userId = userId;
-  req.session.token = token;
+  // req.session.userId = userId;
+  // req.session.token = token;
   res.status = 200;
-  res.redirect('/#/token/');
-  // req.session.regenerate(function () {
-  //   req.session.user = username;
-  //   res.redirect('/');
-  // });
+  res.json({token: token});
 }
 
 module.exports = router;
