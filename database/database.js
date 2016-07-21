@@ -155,6 +155,7 @@ exports.joinEvent = function (userId, channelId) {
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   console.log('User joined event');
   saveDatabase();
+  return true;
 
 };
 
