@@ -8,8 +8,8 @@ var config = {
   ADSK_SERVER : '', //-stg
   ADSK_VERSION : 'v1',
 
-  DB : './database/storage/data.txt',
-  DB_TMPL : './database/storage/data.template.txt',
+  DB : './database/storage/data.json',
+  DB_TMPL : './database/storage/data.template.json',
 }
 
 exports.getADSKAuthPath = function () {
