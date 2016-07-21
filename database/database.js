@@ -42,7 +42,7 @@ var Data = {
 
 
 exports.getChannels = function (userId) {
-
+  readDatabase();
   var index = _.findIndex(Data.Users, { id: userId });
 
   if (index === -1) {
@@ -64,7 +64,7 @@ exports.getChannels = function (userId) {
 
 
 exports.joinChannel = function (channelId, userId) {
-
+  readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
 
   if (userIndex === -1) {
@@ -80,32 +80,29 @@ exports.joinChannel = function (channelId, userId) {
   }
 
   Data.Users[userIndex].channels[channelId] = channelId;
-
+  saveDatabase();
+  console.log('User joined channel');
   return true;
 };
 
-exports.addUser = function (userId) {
-
+exports.useOrCreateUser = function (userId, token) {
+  readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
+  var added = false;
   if (userIndex === -1) {
-    //   { id: '1235', channels: { '1': '1', '2': '2' } },
-    Data.Users.push({ id: userId, channels: {} });
-    return true;
+    var added = true;
+    Data.Users.push({ id: userId, token:token, channels: {} });
   }
-  return false;
-}
-
-exports.addTokenToUser = function (userId, token) {
-
-  var userIndex = _.findIndex(Data.Users, { id: userId });
-  if (userIndex !== -1) {
+  else{
     Data.Users[userIndex].token = token;
-    return true;
   }
-  return false;
+  saveDatabase();
+  console.log('User added');
+  return added;
 }
 
 exports.startEvent = function (userId, channelId, timeout, maxUsers) {
+  readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -133,14 +130,16 @@ exports.startEvent = function (userId, channelId, timeout, maxUsers) {
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
   Data.Channels[channelIndex].event.maxUsers = maxUsers,
-    Data.Channels[channelIndex].event.listOfUsers = [];
+  Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
+  saveDatabase();
   console.log('event started');
   return true;
 
 };
 
 exports.joinEvent = function (userId, channelId) {
+  readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -170,67 +169,20 @@ exports.joinEvent = function (userId, channelId) {
   }
 
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
+  console.log('User joined event');
+  saveDatabase();
 
 };
 
-
-//   newEvent: {
-//     timeout: 1234567890123,
-//     maxUsers: 1000,
-
-//   }
-
-
-// {
-//   id: '2',
-//   name: 'pizza',
-//   event: {
-//     state: 0, // ACTIVE = 1, 
-//     author: '1235',
-//     timeout: 1234567890123,
-//     maxUsers: 1000,
-//     listOfUsers: [
-//       '1235',
-//       '123456789'
-//     ]
-//   }
-
-
-
-exports.saveUsersDatabase = function () {
-
-  serialize(Data.Users, config.getUserDBPath());
-}
-
-exports.saveChannelsDatabase = function () {
-
-  serialize(Data.Channels, config.getChannelsDBPath());
-}
-
-
-function serialize(obj, path) {
-  var text = JSON.stringify(obj);
-  fs.writeFile(path, text, { 'encoding': 'utf8' }, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-
-    }
-  });
-}
-
-function deserialize(path) {
-  fs.readFile(path, (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      var obj = JSON.parse(data);
-      return obj;
-    }
-  });
-}
-
-
 exports.getDataBaseContent = function () {
+  readDatabase();
   return Data;
 }
+
+function saveDatabase () {
+  fs.writeFileSynch(config.getDBPath(),JSON.stringify(Data), 'utf8');
+};
+
+function readDatabase() {
+  return JSON.parse(fs.readFileSynch(config.getDBPath(),'utf8'));
+};

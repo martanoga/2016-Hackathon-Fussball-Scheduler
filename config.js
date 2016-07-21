@@ -6,8 +6,7 @@ var config = {
   ADSK_SERVER : '', //-stg
   ADSK_VERSION : 'v1',
 
-  USERS_DB : './database/storage/users.txt',
-  CHANNELS_DB : './database/storage/channels.txt'
+  DB : './database/storage/data.txt',
 }
 
 exports.getADSKAuthPath = function () {
@@ -22,10 +21,6 @@ exports.getADSKGetUserInfoPath = function () {
   return config.ADSK_PATH_START + config.ADSK_SERVER + config.ADSK_PATH_END + '/userprofile/' + config.ADSK_VERSION + '/users/@me';
 };
 
-exports.getUserDBPath = function () {
-  return config.USERS_DB;
-};
-
-exports.getChannelsDBPath = function () {
-  return config.CHANNELS_DB;
+exports.getDBPath = function () {
+  return config._DB;
 };

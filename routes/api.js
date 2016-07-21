@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var session = require('express-session');
-
 var database = require('../database/database.js');
 
 router.get('/channels', function (req, res, next) {
@@ -44,9 +42,6 @@ router.post('/channel/joinevent', function (req, res, next) {
   }
 });
 
-router.get('/token', function (req, res, next) {
-  res.send(200, req.session.token);
-});
 
 
 // developer tools
@@ -63,8 +58,6 @@ router.post('/fake-login', function (req, res, next) {
 
 function setUserId(userId, req){
   database.addUser(userId);
-  req.session.userId = userId;
-  req.session.save();
   global.userId = req.session.userId;
 }
 

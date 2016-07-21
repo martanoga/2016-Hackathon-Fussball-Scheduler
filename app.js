@@ -5,21 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var session = require('express-session');
-
 var api = require('./routes/api');
 var router = require('./routes/index');
 //var users = require('./routes/users');
 
 var app = express();
-
-app.use(session({
-    secret: 'sessionId1234',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { path: '/', httpOnly: true, maxAge: 30 * 30000 },
-    rolling: true
-}));
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
