@@ -1,5 +1,6 @@
 //https://developer-stg.api.autodesk.com/authentication/v1/authenticate
 var fs = require('fs');
+var fse = require('fs-extra');
 
 
 var config = {
@@ -28,7 +29,7 @@ exports.getDBPath = function () {
   try {
       fs.accessSync(config.DB, fs.F_OK);
   } catch (e) {
-      fs.createReadStream(config.DB_TMPL).pipe(fs.createWriteStream(config.DB));
+      fse.copySync(config.DB_TMPL, config.DB);
   }
   return config.DB;
 };
