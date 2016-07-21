@@ -12,6 +12,6 @@
         <md-button ng-if="!channel.subscribed" ng-click="subscribe()">Subscribe</md-button>
         <md-button ng-if="channel.subscribed" ng-click="unsubscribe()">Unsubscribe</md-button>
         <md-button ng-if="channel.eventInProgress&&channel.subscribed" ng-disabled="channel.joined" ng-click="joinEvent()">Join</md-button>
-        <md-button ng-if="!channel.eventInProgress&&channel.subscribed" ng-click="startEvent()">Start</md-button>
+        <md-button ng-if="!channel.eventInProgress&&channel.subscribed" ng-click="startEvent($event)">Start</md-button>
     </md-card-actions>
 </md-card>

@@ -16,19 +16,14 @@ angular.module('fussball.scheduler', [
             .state('signout', {
                 url: '/signout',
                 controller: function (Auth) {
-                    Auth.signout();
+                    Auth.signOut();
                 }
             })
             .state('token', {
                 url: '/token/:accessToken/:userId',
                 template: '',
-                controller: function ($location, $http, $stateParams) {
-                    var user = {
-                        userId: $stateParams.userId,
-                        accessToken: $stateParams.accessToken
-                    }
-                    localStorage.setItem("fussball.scheduler", JSON.stringify(user));
-                    $location.path("/channels");
+                controller: function (Auth, $stateParams) {
+                    Auth.signIn($stateParams);                    
                 }
             })
             .state('channels', {
@@ -46,6 +41,7 @@ angular.module('fussball.scheduler', [
                 }
             })
 
+        $mdThemingProvider.theme('default').primaryPalette('blue');
         $mdThemingProvider.theme('grey').backgroundPalette('grey').dark();
         $mdThemingProvider.theme('orange').backgroundPalette('orange').dark();
         $mdThemingProvider.theme('green').backgroundPalette('green').dark();
@@ -57,15 +53,19 @@ angular.module('fussball.scheduler', [
             request: function (object) {
                 var userData = JSON.parse($window.localStorage.getItem('fussball.scheduler'));
                 if (userData) {
-                    object.url += object.url.indexOf('?') == -1 ? '?' : "#";
-                    object.url += "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
+                    object.url += object.url.indexOf('?') == -1 ? '?' : "&";
+                    object.url += "userId=" + userData.userId + "&accessToken=" + userData.accessToken;
                 }
                 return object;
             }
         };
         return attach;
     })
+    .controller('NavigationController', function($scope, Auth){
+        
+    })
     .run(function ($rootScope, $location, Auth, $state) {
+        $rootScope.authenticated = Auth.isAuth();
         $rootScope.$on("$stateChangeStart",
             function (event, toState, toParams, fromState, fromParams) {
                 if (toState && toState.authenticate && !Auth.isAuth()) {

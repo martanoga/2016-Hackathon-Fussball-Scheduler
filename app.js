@@ -9,6 +9,8 @@ var api = require('./routes/api');
 var router = require('./routes/index');
 //var users = require('./routes/users');
 
+var startup = require('./startup.js');
+
 var app = express();
 
 // uncomment after placing your favicon in /public
@@ -55,5 +57,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// startup.CheckChannel('fussball');
+// startup.CheckChannel('pizza');
 
 module.exports = app;

@@ -7,6 +7,7 @@ var config = {
   ADSK_PATH_START : 'https://developer',
   ADSK_PATH_END : '.api.autodesk.com',
   ADSK_SERVER : '', //-stg
+  ADSK_SERVER_STG : '-stg',
   ADSK_VERSION : 'v1',
 
   DB : './database/storage/data.json',
@@ -32,4 +33,15 @@ exports.getDBPath = function () {
       fse.copySync(config.DB_TMPL, config.DB);
   }
   return config.DB;
+};
+
+exports.getADSKAuthenticatePath = function () {
+//!!!!!!!!! stg!!!
+  return config.ADSK_PATH_START + config.ADSK_SERVER_STG + config.ADSK_PATH_END + '/authentication/' + config.ADSK_VERSION + '/authenticate';
+};
+
+exports.getADSKChannelPath = function () {
+  //https://developer-stg.api.autodesk.com/notifications/v1/channel/
+//!!!!!!!!! stg!!!
+  return config.ADSK_PATH_START + config.ADSK_SERVER_STG + config.ADSK_PATH_END + '/notifications/' + config.ADSK_VERSION + '/channel';
 };
