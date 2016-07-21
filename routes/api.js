@@ -6,7 +6,8 @@ var session = require('express-session');
 var database = require('../database/database.js');
 
 router.get('/channels', function (req, res, next) {
-  var userId = req.query.userId;
+  
+  var userId = getUserId(req);
   var channels = database.getChannels(userId);
   if (Object.keys(channels).length === 0) {
     res.send(401);
@@ -17,8 +18,7 @@ router.get('/channels', function (req, res, next) {
 
 router.post('/channels/join', function (req, res, next) {
 
-  var channelId = req.body.channelId;
-  var userId = getUserId(req);
+   var userId = getUserId(req);
   if (database.joinChannel(channelId, userId)) {
     res.send(200);
   } else {
@@ -73,7 +73,7 @@ function setUserId(userId, req) {
 }
 
 function getUserId(req) {
-  return global.userId;
+  return req.query.userId;
 }
 
 module.exports = router;
