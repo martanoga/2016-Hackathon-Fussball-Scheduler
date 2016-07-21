@@ -2,40 +2,7 @@ var _ = require('underscore');
 var fs = require('fs');
 var config = require('../config');
 
-var Data = {
-  Users: [
-    {
-      id: '1235',
-      channels: { '1': '1', '2': '2' },
-      token: ''
-    },
-  ],
-  Channels: [
-    {
-      id: '1',
-      name: 'fussball',
-      event: {
-        state: 0, // ACTIVE = 1, 
-        author: '',
-        timeout: 0,
-        maxUsers: 4,
-        listOfUsers: []
-      }
-    },
-    {
-      id: '2',
-      name: 'pizza',
-      event: {
-        state: 0, // ACTIVE = 1, 
-        author: '',
-        timeout: 0,
-        maxUsers: 1000,
-        listOfUsers: []
-      }
-    }
-  ]
-};
-
+var Data = {};
 
 exports.getChannels = function (userId) {
   readDatabase();
@@ -94,6 +61,21 @@ exports.useOrCreateUser = function (userId, token) {
   }
   saveDatabase();
   console.log('User added');
+  return added;
+}
+
+// {"id":"1","name":"fussball","event":{"state":0,"author":"","timeout":0,"maxUsers":4,"listOfUsers":[]}}
+exports.createChannel = function (channelId, name, maxUsers) {
+  readDatabase();
+  var channelIndex = _.findIndex(Data.Channels, { id: channelId });
+  var added = false;
+  if (userIndex === -1) {
+    var added = true;
+    var channel = { id:channelId,name:name, event:{state:0,author:'',timeout:0,maxUsers:maxUsers,listOfUsers:[] } };
+    Data.Channels.push(channel);
+  }
+  saveDatabase();
+  console.log(added ? 'New channel added' : 'Channel exists');
   return added;
 }
 
@@ -182,5 +164,5 @@ function saveDatabase () {
 function readDatabase() {
   var path = config.getDBPath();
   var txt = fs.readFileSync(path,'utf8');
-  return JSON.parse(txt);
+  Data = JSON.parse(txt);
 };
