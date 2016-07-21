@@ -18,7 +18,8 @@ router.get('/channels', function (req, res, next) {
 
 router.post('/channels/join', function (req, res, next) {
 
-   var userId = getUserId(req);
+  var channelId = reg.body.channelId;
+  var userId = getUserId(req);
   if (database.joinChannel(channelId, userId)) {
     res.send(200);
   } else {
