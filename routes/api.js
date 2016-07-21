@@ -55,17 +55,6 @@ router.get('/db', function (req, res, next) {
   res.send(database.getDataBaseContent());
 });
 
-router.post('/fake-login', function (req, res, next) {
-  setUserId(req.body.userId, req);
-  res.send(200);
-});
-
-
-function setUserId(userId, req) {
-  database.useOrCreateUser(userId,userId);
-  global.userId = userId;
-}
-
 function getUserId(req) {
   return req.query.userId;
 }
