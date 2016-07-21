@@ -137,6 +137,8 @@ exports.joinEvent = function (userId, channelId) {
     return false;
   }
 
+  var channelName = Data.Channels[channelIndex].name;
+
   if (!Data.Users[userIndex].channels[channelId]) {
     console.log('User not subscribed to channel!');
     return false;
@@ -158,11 +160,11 @@ exports.joinEvent = function (userId, channelId) {
   event.listOfUsers.push(userId);
   console.log('User joined event');
 
-  exports.closeEvent(event);
+  exports.closeEvent(event, channelName);
   saveDatabase();
 };
 
-exports.closeEvent = function (event) {
+exports.closeEvent = function (event, channelName) {
 
   if (event.listOfUsers.length >= event.maxUsers) {
 
@@ -171,7 +173,7 @@ exports.closeEvent = function (event) {
     event.timeout = 0;
     event.author = '';
 
-    notifications.eventHappens();
+    notifications.eventHappens(channelName);
   }
 }
 
