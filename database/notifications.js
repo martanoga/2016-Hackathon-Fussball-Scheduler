@@ -1,4 +1,5 @@
 var config = require('../config');
+var request = require('request');
 
 exports.sendEvent = function (channelName, text) {
 
@@ -12,7 +13,7 @@ exports.sendEvent = function (channelName, text) {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     },
-    data: JSON.stringify({
+    body: JSON.stringify({
       message: JSON.stringify({
         type: text,
         text: text
