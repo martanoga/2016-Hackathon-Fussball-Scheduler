@@ -5,6 +5,7 @@ var request = require('request');
 
 var credentials = require('../credentials');
 var config = require('../config');
+var database = require('../database/database.js');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -61,7 +62,6 @@ router.get('/authorization', function (req, res, next) {
             }
           }
         });
-
       }
     }
   });
@@ -70,10 +70,12 @@ router.get('/authorization', function (req, res, next) {
 
 var setSessionUser = function (req, res, token, userId) {
 
-  // req.session.userId = userId;
-  // req.session.token = token;
+  database.addUser(userId);
+  database.addTokenToUser(userId, token);
+  database.saveUsersDatabase();
   res.status = 200;
-  res.json({token: token});
+  //res.json({token: token});
+  res.redirect('/#/token/' + token + '/' + userId);
 }
 
 module.exports = router;

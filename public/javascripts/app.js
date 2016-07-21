@@ -5,7 +5,7 @@ angular.module('fussball.scheduler', [
     'ngMaterial'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $mdThemingProvider) {
-        $urlRouterProvider.otherwise('/channels');
+        //$urlRouterProvider.otherwise('/channels');
 
         $stateProvider
             .state('signin', {
@@ -16,6 +16,21 @@ angular.module('fussball.scheduler', [
             .state('signout', {
                 url: '/signout',
                 controller: 'AuthController'
+            })
+            .state('token', {
+                url: '/token/',
+                template: '',
+                controller: function ($location, $http) {
+                    $http({
+                        method: 'GET',
+                        url: '/api/token'
+                    })
+                        .then(function (resp) {
+                            localStorage.setItem("fussbal.scheduler", "cos");
+                            $location.path("/channels");
+                        });
+
+                }
             })
             .state('channels', {
                 url: '/channels',
@@ -39,4 +54,4 @@ angular.module('fussball.scheduler', [
 
 function AppCtrl($scope) {
     $scope.currentNavItem = 'page2';
-  }
+}

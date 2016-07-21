@@ -1,41 +1,44 @@
 var _ = require('underscore');
 var fs = require('fs');
+var config = require('../config');
 
 var Data = {
-  Users:[
-  {
-    id: '1235',
-    channels: { '1': '1', '2': '2' }
-  },
-],
-Channels:[
-  {
-    id: '1',
-    name: 'fussball',
-    event: {
-      state: 0, // ACTIVE = 1, 
-      author: '1235',
-      timeout: 1234567890123,
-      maxUsers: 4,
-      listOfUsers: [
-        '1235'
-      ]
+  Users: [
+    {
+      id: '1235',
+      channels: { '1': '1', '2': '2' },
+      token: ''
+    },
+  ],
+  Channels: [
+    {
+      id: '1',
+      name: 'fussball',
+      event: {
+        state: 0, // ACTIVE = 1, 
+        author: '1235',
+        timeout: 1234567890123,
+        maxUsers: 4,
+        listOfUsers: [
+          '1235'
+        ]
+      }
+    },
+    {
+      id: '2',
+      name: 'pizza',
+      event: {
+        state: 0, // ACTIVE = 1, 
+        author: '1235',
+        timeout: 1234567890123,
+        maxUsers: 1000,
+        listOfUsers: [
+          '1235',
+        ]
+      }
     }
-  },
-  {
-    id: '2',
-    name: 'pizza',
-    event: {
-      state: 0, // ACTIVE = 1, 
-      author: '1235',
-      timeout: 1234567890123,
-      maxUsers: 1000,
-      listOfUsers: [
-        '1235',
-      ]
-    }
-  }
-]};
+  ]
+};
 
 
 exports.getChannels = function (userId) {
@@ -69,7 +72,7 @@ exports.joinChannel = function (channelId, userId) {
     return false;
   }
 
-   var channelIndex = _.findIndex(Data.Channels, { id: channelId });
+  var channelIndex = _.findIndex(Data.Channels, { id: channelId });
 
   if (channelIndex === -1) {
     console.log('Channel needs to be created!');
@@ -81,19 +84,28 @@ exports.joinChannel = function (channelId, userId) {
   return true;
 };
 
-exports.addUser = function(userId){
-  
+exports.addUser = function (userId) {
+
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
     //   { id: '1235', channels: { '1': '1', '2': '2' } },
-    Data.Users.push({id: userId, channels: {}});
+    Data.Users.push({ id: userId, channels: {} });
     return true;
   }
   return false;
 }
 
+exports.addTokenToUser = function (userId, token) {
 
-exports.startEvent = function(userId,channelId,timeout,maxUsers){
+  var userIndex = _.findIndex(Data.Users, { id: userId });
+  if (userIndex !== -1) {
+    Data.Users[userIndex].token = token;
+    return true;
+  }
+  return false;
+}
+
+exports.startEvent = function (userId, channelId, timeout, maxUsers) {
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -106,12 +118,12 @@ exports.startEvent = function(userId,channelId,timeout,maxUsers){
     return false;
   }
 
-  if( !Data.Users[userIndex].channels[channelId]){
+  if (!Data.Users[userIndex].channels[channelId]) {
     console.log('User not subscribed to channel!');
     return false;
   }
-  
-  if( Data.Channels[channelIndex].event.state){
+
+  if (Data.Channels[channelIndex].event.state) {
     console.log('event already in progress');
     return false;
   }
@@ -121,14 +133,14 @@ exports.startEvent = function(userId,channelId,timeout,maxUsers){
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
   Data.Channels[channelIndex].event.maxUsers = maxUsers,
-  Data.Channels[channelIndex].event.listOfUsers = [];
+    Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   console.log('event started');
   return true;
 
 };
 
-exports.joinEvent = function(userId,channelId){
+exports.joinEvent = function (userId, channelId) {
   var userIndex = _.findIndex(Data.Users, { id: userId });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -141,17 +153,17 @@ exports.joinEvent = function(userId,channelId){
     return false;
   }
 
-  if( !Data.Users[userIndex].channels[channelId]){
+  if (!Data.Users[userIndex].channels[channelId]) {
     console.log('User not subscribed to channel!');
     return false;
   }
-  
-  if( !Data.Channels[channelIndex].event.state){
+
+  if (!Data.Channels[channelIndex].event.state) {
     console.log('event not started yet');
     return false;
   }
 
-  var userInEventIndex = _.findIndex(Data.Channels[channelIndex].event.listOfUsers, userId );
+  var userInEventIndex = _.findIndex(Data.Channels[channelIndex].event.listOfUsers, userId);
   if (userInEventIndex !== -1) {
     console.log('User already participates!');
     return false;
@@ -162,27 +174,38 @@ exports.joinEvent = function(userId,channelId){
 };
 
 
-  //   newEvent: {
-  //     timeout: 1234567890123,
-  //     maxUsers: 1000,
+//   newEvent: {
+//     timeout: 1234567890123,
+//     maxUsers: 1000,
 
-  //   }
+//   }
 
 
-  // {
-  //   id: '2',
-  //   name: 'pizza',
-  //   event: {
-  //     state: 0, // ACTIVE = 1, 
-  //     author: '1235',
-  //     timeout: 1234567890123,
-  //     maxUsers: 1000,
-  //     listOfUsers: [
-  //       '1235',
-  //       '123456789'
-  //     ]
-  //   }
+// {
+//   id: '2',
+//   name: 'pizza',
+//   event: {
+//     state: 0, // ACTIVE = 1, 
+//     author: '1235',
+//     timeout: 1234567890123,
+//     maxUsers: 1000,
+//     listOfUsers: [
+//       '1235',
+//       '123456789'
+//     ]
+//   }
 
+
+
+exports.saveUsersDatabase = function () {
+
+  serialize(Data.Users, config.getUserDBPath());
+}
+
+exports.saveChannelsDatabase = function () {
+
+  serialize(Data.Channels, config.getChannelsDBPath());
+}
 
 
 function serialize(obj, path) {
@@ -208,6 +231,6 @@ function deserialize(path) {
 }
 
 
-exports.getDataBaseContent = function(){
+exports.getDataBaseContent = function () {
   return Data;
 }
