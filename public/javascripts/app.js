@@ -65,7 +65,7 @@ angular.module('fussball.scheduler', [
         
     })
     .run(function ($rootScope, $location, Auth, $state) {
-        $rootScope.authenticated = false;
+        $rootScope.authenticated = Auth.isAuth();
         $rootScope.$on("$stateChangeStart",
             function (event, toState, toParams, fromState, fromParams) {
                 if (toState && toState.authenticate && !Auth.isAuth()) {
