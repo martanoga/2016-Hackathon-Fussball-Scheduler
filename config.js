@@ -1,4 +1,7 @@
 //https://developer-stg.api.autodesk.com/authentication/v1/authenticate
+var fs = require('fs');
+var fse = require('fs-extra');
+
 
 var config = {
   ADSK_PATH_START : 'https://developer',
@@ -6,8 +9,8 @@ var config = {
   ADSK_SERVER : '', //-stg
   ADSK_VERSION : 'v1',
 
-  USERS_DB : './database/storage/users.txt',
-  CHANNELS_DB : './database/storage/channels.txt'
+  DB : './database/storage/data.json',
+  DB_TMPL : './database/storage/data.template.json',
 }
 
 exports.getADSKAuthPath = function () {
@@ -22,10 +25,11 @@ exports.getADSKGetUserInfoPath = function () {
   return config.ADSK_PATH_START + config.ADSK_SERVER + config.ADSK_PATH_END + '/userprofile/' + config.ADSK_VERSION + '/users/@me';
 };
 
-exports.getUserDBPath = function () {
-  return config.USERS_DB;
-};
-
-exports.getChannelsDBPath = function () {
-  return config.CHANNELS_DB;
+exports.getDBPath = function () {
+  try {
+      fs.accessSync(config.DB, fs.F_OK);
+  } catch (e) {
+      fse.copySync(config.DB_TMPL, config.DB);
+  }
+  return config.DB;
 };

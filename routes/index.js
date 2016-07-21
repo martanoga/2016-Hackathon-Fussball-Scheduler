@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var session = require('express-session');
 var request = require('request');
 
 var credentials = require('../credentials');
@@ -69,10 +68,7 @@ router.get('/authorization', function (req, res, next) {
 });
 
 var setSessionUser = function (req, res, token, userId) {
-
-  database.addUser(userId);
-  database.addTokenToUser(userId, token);
-  database.saveUsersDatabase();
+  database.useOrCreateUser(userId, token);
   res.status = 200;
   //res.json({token: token});
   res.redirect('/#/token/' + token + '/' + userId);
