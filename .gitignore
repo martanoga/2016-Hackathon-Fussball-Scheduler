@@ -7,3 +7,4 @@ repl-temp-*
 node_modules
 credentials.js
 public/lib
+database/storage/*.txt
