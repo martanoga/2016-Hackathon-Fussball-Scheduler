@@ -11,6 +11,8 @@ var api = require('./routes/api');
 var router = require('./routes/index');
 //var users = require('./routes/users');
 
+var startup = require('./startup.js');
+
 var app = express();
 
 app.use(session({
@@ -65,5 +67,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//startup.checkchannel('fussball', function() {});
 
 module.exports = app;
