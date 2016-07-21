@@ -1,22 +1,33 @@
 var _ = require('underscore');
 var fs = require('fs');
+var config = require('../config');
+
+var User = {
+  id: '',
+  channels: {},
+  token: ''
+}
 
 var Users = [
   {
     id: '1235',
-    channels: { '1': '1', '2': '2' }
+    channels: { '1': '1', '2': '2' },
+    token: ''
   },
   {
     id: '123456789',
-    channels: { '1': '1', '2': '2' }
+    channels: { '1': '1', '2': '2' },
+    token: ''
   },
   {
     id: '007',
-    channels: { '2': '2' }
+    channels: { '2': '2' },
+    token: ''
   },
   {
     id: '0001',
-    channels: { }
+    channels: {},
+    token: ''
   }
 ];
 
@@ -82,7 +93,7 @@ exports.joinChannel = function (channelId, userId) {
     return false;
   }
 
-   var channelIndex = _.findIndex(Channels, { id: channelId });
+  var channelIndex = _.findIndex(Channels, { id: channelId });
 
   if (channelIndex === -1) {
     console.log('Channel needs to be created!');
@@ -94,19 +105,34 @@ exports.joinChannel = function (channelId, userId) {
   return true;
 };
 
-exports.addUser = function(userId){
-  
+
+
+
+
+
+
+exports.addUser = function (userId) {
+
   var userIndex = _.findIndex(Users, { id: userId });
   if (userIndex === -1) {
     //   { id: '1235', channels: { '1': '1', '2': '2' } },
-    Users.push({id: userId, channels: {}});
+    Users.push({ id: userId, channels: {}, token: '' });
     return true;
   }
   return false;
 }
 
+exports.addTokenToUser = function (userId, token) {
 
-exports.startEvent = function(userId,channelId,newEvent){
+  var userIndex = _.findIndex(Users, { id: userId });
+  if (userIndex !== -1) {
+    Users[userIndex].token = token;
+    return true;
+  }
+  return false;
+}
+
+exports.startEvent = function (userId, channelId, newEvent) {
   var userIndex = _.findIndex(Users, { id: newEvent.author });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -119,7 +145,7 @@ exports.startEvent = function(userId,channelId,newEvent){
     return false;
   }
 
-  if( Users[newEvent.author].channels[channelId] && !Channels[channelIndex].event.state){
+  if (Users[newEvent.author].channels[channelId] && !Channels[channelIndex].event.state) {
     Channels[channelIndex].event = newEvent;
     Channels[channelIndex].event.state = 1;
     Channels[channelIndex].event.author = userId;
@@ -131,7 +157,7 @@ exports.startEvent = function(userId,channelId,newEvent){
   }
 };
 
-exports.joinEvent = function(channelId){
+exports.joinEvent = function (channelId) {
   var userIndex = _.findIndex(Users, { id: newEvent.author });
   if (userIndex === -1) {
     console.log('User needs to be created!');
@@ -144,7 +170,7 @@ exports.joinEvent = function(channelId){
     return false;
   }
 
-  if( Users[newEvent.author].channels[channelId] && Channels[channelIndex].event.state){
+  if (Users[newEvent.author].channels[channelId] && Channels[channelIndex].event.state) {
     Channels[channelIndex].event.listOfUsers.push(userId);
   }
   else {
@@ -154,32 +180,38 @@ exports.joinEvent = function(channelId){
 };
 
 
-  //   newEvent: {
-  //     timeout: 1234567890123,
-  //     maxUsers: 1000,
+//   newEvent: {
+//     timeout: 1234567890123,
+//     maxUsers: 1000,
 
-  //   }
-
-
-  // {
-  //   id: '2',
-  //   name: 'pizza',
-  //   event: {
-  //     state: 0, // ACTIVE = 1, 
-  //     author: '1235',
-  //     timeout: 1234567890123,
-  //     maxUsers: 1000,
-  //     listOfUsers: [
-  //       '1235',
-  //       '123456789'
-  //     ]
-  //   }
+//   }
 
 
+// {
+//   id: '2',
+//   name: 'pizza',
+//   event: {
+//     state: 0, // ACTIVE = 1, 
+//     author: '1235',
+//     timeout: 1234567890123,
+//     maxUsers: 1000,
+//     listOfUsers: [
+//       '1235',
+//       '123456789'
+//     ]
+//   }
 
 
 
+exports.saveUsersDatabase = function () {
+  
+  serialize(Users, config.getUserDBPath());
+}
 
+exports.saveChannelsDatabase = function () {
+  
+  serialize(Channels, config.getChannelsDBPath());
+}
 
 
 function serialize(obj, path) {
