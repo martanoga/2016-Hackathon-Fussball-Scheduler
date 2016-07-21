@@ -140,17 +140,24 @@ angular.module('fussball.scheduler.channels', [])
       }
     }
   })
-  .factory('Channels', function ($http) {
+  .factory('Channels', function ($http, $location) {
     var channels = [];
     return {
       getAll: function () {
         return $http({
           method: 'GET',
-          url: '/api/channels?userId=123456789'
+          url: '/api/channels'
         })
           .then(function (resp) {
             channels = resp.data
-            return [];
+            return channels;
+          })
+          .catch(function (err) {
+            console.log(err);
+            if (err.status === 401) {
+              $location.path("signout");
+            }
+
           });
 
       },
