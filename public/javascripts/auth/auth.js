@@ -1,13 +1,18 @@
 angular.module('fussball.scheduler.auth', [])
 
-.controller('AuthController', function ($scope) {
-   console.log('Hello from auth controller');
-})
-.factory('Auth', function ($http) {
+  .controller('AuthController', function ($scope) {
+    console.log('Hello from auth controller');
+  })
+  .factory('Auth', function ($http, $location) {
 
-  return {
-    signout: function () {
-       console.log('hello from factory auth');
-    }
-  };
-});
+    return {
+      isAuth: function () {
+        return !!localStorage.getItem("fussball.scheduler");
+      },
+      signout: function () {
+        localStorage.removeItem("fussball.scheduler");
+        //TBD: request to server to destroy user session
+        $location.path("signin");
+      }
+    };
+  });

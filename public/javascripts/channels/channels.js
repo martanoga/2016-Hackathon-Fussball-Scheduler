@@ -1,6 +1,6 @@
 angular.module('fussball.scheduler.channels', [])
 
-  .controller('ChannelsController', function ($http, $scope, channels, Channels, notifications, Notifications) {
+  .controller('ChannelsController', function ($mdToast, $http, $scope, channels, Channels, notifications, Notifications) {
     $scope.currentNavItem = 'page1';
     console.log('Hello from channels controller');
     $scope.channels = channels;
@@ -31,7 +31,7 @@ angular.module('fussball.scheduler.channels', [])
       $http({
         method: 'POST',
         url: '/api/channels/join',
-        data: { channelId : this.channel.id }
+        data: { channelId: this.channel.id }
       })
         .then(function (resp) {
           this.channel.subscribed = true;
@@ -54,26 +54,55 @@ angular.module('fussball.scheduler.channels', [])
       //this should be done in callabck
       this.channel.eventInProgress = true;
     };
-    $scope.joinEvent = function () {
-      console.log("Join event", this.channel.name);
+    $scope.joinEvent = function (channel) {
+      if (!channel) {
+        channel = this.channel;
+      }
+      console.log("Join event", channel.name);
       //TBD: post to server
       //this should be done in callabck
-      this.channel.joined = true;
+      channel.joined = true;
     };
 
     $scope.cancelEvent = function () {
-      Channels.onEventCanceled($scope.channels[0].id);
+      $scope.subscribeCallback({ type: "CANCEL" }, $scope.channels[0].id);
     }
     $scope.makeEventHappen = function () {
-      Channels.onEvenHappens($scope.channels[0].id);
+      $scope.subscribeCallback({ type: "HAPPEN" }, $scope.channels[0].id);
+    }
+
+    $scope.startEvent = function () {
+      $scope.subscribeCallback({ type: "START" }, $scope.channels[0].id);
     }
 
     $scope.subscribeCallback = function (m, channelId) {
-      if (m.type = 'HAPPEN') {
-        Channels.onEvenHappens(channelId);
-      } else if (m.type = 'CANCEL') {
-        Channels.onEventCanceled(channelId);
+      if (m.type === 'HAPPEN') {
+        Channels.onEventHappens(channelId, function (channel) {
+          $scope.displayToast(channel.name + " is happening!");
+        });
+      } else if (m.type === 'CANCEL') {
+        Channels.onEventCanceled(channelId, function (channel) {
+          $scope.displayToast(channel.name + " is canceled!");
+        });
+      } else if (m.type === 'START') {
+        Channels.onEventStarted(channelId, function (channel) {
+          $scope.displayToast(channel.name + " started!", "JOIN", function () {
+            $scope.joinEvent(channel);
+          });
+        });
       }
+    }
+
+    $scope.displayToast = function (message, action, callback) {
+      var toast = $mdToast.simple().textContent(message).position('bottom right');
+      if (action) {
+        toast.action(action);
+      }
+      $mdToast.show(toast).then(function (response) {
+        if (response && callback) {
+          callback(response);
+        };
+      });
     }
   })
 
@@ -111,35 +140,54 @@ angular.module('fussball.scheduler.channels', [])
       }
     }
   })
-  .factory('Channels', function ($http) {
+  .factory('Channels', function ($http, $location) {
     var channels = [];
     return {
       getAll: function () {
         return $http({
           method: 'GET',
-          url: '/api/channels?userId=123456789'
+          url: '/api/channels'
         })
           .then(function (resp) {
-            return resp.data;
+            channels = resp.data
+            return channels;
+          })
+          .catch(function (err) {
+            console.log(err);
+            if (err.status === 401) {
+              $location.path("signout");
+            }
+
           });
 
       },
-      onEventCanceled: function (channelId) {
+      onEventStarted: function (channelId, callback) {
+        for (var i = 0; i < channels.length; i++) {
+          if (channels[i].id === channelId) {
+            channels[i].eventInProgress = true;
+            channels[i].joined = false;
+            console.log("Event started: ", channels[i].name);
+            callback(channels[i]);
+          }
+        }
+      },
+      onEventCanceled: function (channelId, callback) {
         for (var i = 0; i < channels.length; i++) {
           if (channels[i].id === channelId) {
             channels[i].eventInProgress = false;
             channels[i].joined = false;
             console.log("Event canceled: ", channels[i].name);
+            callback(channels[i]);
           }
         }
       },
-      onEvenHappens: function (channelId) {
+      onEventHappens: function (channelId, callback) {
         for (var i = 0; i < channels.length; i++) {
           if (channels[i].id === channelId) {
             channels[i].eventInProgress = false;
             channels[i].joined = false;
-            //TBD: display notification!
             console.log("Event it happening: ", channels[i].name);
+            callback(channels[i]);
           }
         }
       }

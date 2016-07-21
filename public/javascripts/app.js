@@ -5,7 +5,7 @@ angular.module('fussball.scheduler', [
     'ngMaterial'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $mdThemingProvider) {
-        //$urlRouterProvider.otherwise('/channels');
+        $urlRouterProvider.otherwise('/channels');
 
         $stateProvider
             .state('signin', {
@@ -15,27 +15,27 @@ angular.module('fussball.scheduler', [
             })
             .state('signout', {
                 url: '/signout',
-                controller: 'AuthController'
+                controller: function (Auth) {
+                    Auth.signout();
+                }
             })
             .state('token', {
-                url: '/token/',
+                url: '/token/:accessToken/:userId',
                 template: '',
-                controller: function ($location, $http) {
-                    $http({
-                        method: 'GET',
-                        url: '/api/token'
-                    })
-                        .then(function (resp) {
-                            localStorage.setItem("fussbal.scheduler", "cos");
-                            $location.path("/channels");
-                        });
-
+                controller: function ($location, $http, $stateParams) {
+                    var user = {
+                        userId: $stateParams.userId,
+                        accessToken: $stateParams.accessToken
+                    }
+                    localStorage.setItem("fussball.scheduler", JSON.stringify(user));
+                    $location.path("/channels");
                 }
             })
             .state('channels', {
                 url: '/channels',
                 templateUrl: 'javascripts/channels/channels.html',
                 controller: 'ChannelsController',
+                authenticate: true,
                 resolve: {
                     channels: function (Channels) {
                         return Channels.getAll();
@@ -49,9 +49,30 @@ angular.module('fussball.scheduler', [
         $mdThemingProvider.theme('grey').backgroundPalette('grey').dark();
         $mdThemingProvider.theme('orange').backgroundPalette('orange').dark();
         $mdThemingProvider.theme('green').backgroundPalette('green').dark();
-    })
-    .controller('NagigationCtrl', AppCtrl);
 
-function AppCtrl($scope) {
-    $scope.currentNavItem = 'page2';
-}
+        $httpProvider.interceptors.push('AttachUserData');
+    })
+    .factory('AttachUserData', function ($window) {
+        var attach = {
+            request: function (object) {
+                var userData = JSON.parse($window.localStorage.getItem('fussball.scheduler'));
+                if (userData) {
+                    object.url += object.url.indexOf('?') == -1 ? '?' : "#";
+                    object.url += "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
+                }
+                return object;
+            }
+        };
+        return attach;
+    })
+    .run(function ($rootScope, $location, Auth, $state) {
+        $rootScope.$on("$stateChangeStart",
+            function (event, toState, toParams, fromState, fromParams) {
+                if (toState && toState.authenticate && !Auth.isAuth()) {
+                    event.preventDefault();
+                    console.log("unauthorized");
+                    $state.go("signin");
+                }
+            }
+        );
+    });
