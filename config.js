@@ -1,4 +1,6 @@
 //https://developer-stg.api.autodesk.com/authentication/v1/authenticate
+var fs = require('fs');
+
 
 var config = {
   ADSK_PATH_START : 'https://developer',
@@ -7,6 +9,7 @@ var config = {
   ADSK_VERSION : 'v1',
 
   DB : './database/storage/data.txt',
+  DB_TMPL : './database/storage/data.template.txt',
 }
 
 exports.getADSKAuthPath = function () {
@@ -22,5 +25,10 @@ exports.getADSKGetUserInfoPath = function () {
 };
 
 exports.getDBPath = function () {
+  try {
+      fs.accessSync(config.DB, fs.F_OK);
+  } catch (e) {
+      fs.createReadStream(config.DB_TMPL).pipe(fs.createWriteStream(config.DB));
+  }
   return config.DB;
 };
