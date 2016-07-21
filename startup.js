@@ -46,6 +46,7 @@ function getToken() {
     );
   }).then(function (resolve, reject) {
     if (resolve) {
+      global.token = resolve;
       return resolve;
     }
   });
@@ -138,6 +139,6 @@ function deleteChannel(channelName, token) {
 
 
 
-
+exports.GetToken = getToken;
 
 exports.CheckChannel = checkChannel;

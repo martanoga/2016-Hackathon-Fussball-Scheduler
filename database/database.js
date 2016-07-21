@@ -162,6 +162,7 @@ exports.joinEvent = function (userId, channelId) {
 
   exports.closeEvent(event, channelName);
   saveDatabase();
+  return true;
 };
 
 exports.closeEvent = function (event, channelName) {
