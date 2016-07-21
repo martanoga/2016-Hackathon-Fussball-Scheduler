@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var fs = require('fs');
 var config = require('../config');
+var notifications = require('./notifications.js');
 
 var Data = {};
 
@@ -141,22 +142,38 @@ exports.joinEvent = function (userId, channelId) {
     return false;
   }
 
-  if (!Data.Channels[channelIndex].event.state) {
+  var event = Data.Channels[channelIndex].event;
+
+  if (!event.state) {
     console.log('event not started yet');
     return false;
   }
 
-  var userInEventIndex = _.findIndex(Data.Channels[channelIndex].event.listOfUsers, userId);
+  var userInEventIndex = _.findIndex(event.listOfUsers, userId);
   if (userInEventIndex !== -1) {
     console.log('User already participates!');
     return false;
   }
 
-  Data.Channels[channelIndex].event.listOfUsers.push(userId);
+  event.listOfUsers.push(userId);
   console.log('User joined event');
-  saveDatabase();
 
+  exports.closeEvent(event);
+  saveDatabase();
 };
+
+exports.closeEvent = function (event) {
+
+  if (event.listOfUsers.length >= event.maxUsers) {
+
+    event.state = 0;
+    event.listOfUsers = [];
+    event.timeout = 0;
+    event.author = '';
+
+    notifications.eventHappens();
+  }
+}
 
 exports.getDataBaseContent = function () {
   readDatabase();
