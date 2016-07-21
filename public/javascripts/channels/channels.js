@@ -28,15 +28,16 @@ angular.module('fussball.scheduler.channels', [])
     }
     $scope.subscribe = function () {
       console.log("Subscribe!", this.channel.name);
+      var channel = this.channel;
       $http({
         method: 'POST',
         url: '/api/channels/join',
-        data: { channelId: this.channel.id }
+        data: { channelId: channel.id }
       })
         .then(function (resp) {
-          this.channel.subscribed = true;
-          Notifications.subscribe(this.channel.id, function (m) {
-            $scope.subscribeCallback(m, this.channel.id);
+          channel.subscribed = true;
+          Notifications.subscribe(channel.id, function (m) {
+            $scope.subscribeCallback(m, channel.id);
           });
         });
     };
