@@ -3,16 +3,9 @@ var database = require('./database/database.js');
 var credentials = require('./credentials.js');
 var request = require('request');
 var Promise = require('bluebird');
+var config = require('./config.js')
 
-exports.initializeDatabase = function () {
-  var path = './database/storage/channels.txt';
 
-  if (!fs.statSync(path).isFile()) {
-    database.saveDatabase(function () {
-      //todo
-    });
-  }
-}
 
 function attachToken(xhr) {
   xhr.setRequestHeader("Authorization", 'Bearer ' + accessToken);
@@ -60,13 +53,13 @@ function getToken() {
 }
 
 
-function checkChannel(channelName) {
+function checkChannel(channelName, maxUsers) {
 
   //$http.get(tokenUrl)
   getToken()
     .then(function (data) {
       accessToken = data;
-      var url = config.getADSKChannelPath() + channelName;
+      var url = config.getADSKChannelPath() + '/' + channelName;
       request.get({
         url: url,
         headers: {
@@ -76,11 +69,11 @@ function checkChannel(channelName) {
       },
         function (error, response, body) {
           if (response.statusCode === 404) {
-            createChannel(channelName, accessToken);
+            createChannel(channelName, maxUsers, accessToken);
           } else {
             //channel exists - ok, maybe update needed...
             var channelId = JSON.parse(body).Channel;
-            database.updateChannel(channelName, channelId);
+            database.createChannel(channelId, channelName, maxUsers);
           }
         }
       );
@@ -88,7 +81,7 @@ function checkChannel(channelName) {
 };
 
 
-function createChannel(channelName, token) {
+function createChannel(channelName, maxUsers, token) {
 
   var url = config.getADSKChannelPath();
 
@@ -115,7 +108,7 @@ function createChannel(channelName, token) {
         } else {
           response.statusCode = 200;
           var channelId = body.channelId;
-          database.updateChannel(channelName, channelId);
+          database.createChannel(channelId, channelName, maxUsers);
         }
       }
     }

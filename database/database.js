@@ -54,9 +54,9 @@ exports.useOrCreateUser = function (userId, token) {
   var added = false;
   if (userIndex === -1) {
     var added = true;
-    Data.Users.push({ id: userId, token:token, channels: {} });
+    Data.Users.push({ id: userId, token: token, channels: {} });
   }
-  else{
+  else {
     Data.Users[userIndex].token = token;
   }
   saveDatabase();
@@ -69,10 +69,16 @@ exports.createChannel = function (channelId, name, maxUsers) {
   readDatabase();
   var channelIndex = _.findIndex(Data.Channels, { id: channelId });
   var added = false;
-  if (userIndex === -1) {
-    var added = true;
-    var channel = { id:channelId,name:name, event:{state:0,author:'',timeout:0,maxUsers:maxUsers,listOfUsers:[] } };
-    Data.Channels.push(channel);
+  if (channelIndex === -1) {
+    channelIndex = _.findIndex(Data.Channels, { name: name });
+    if (channelIndex === -1) {
+      var added = true;
+      var channel = { id: channelId, name: name, event: { state: 0, author: '', timeout: 0, maxUsers: maxUsers, listOfUsers: [] } };
+      Data.Channels.push(channel);
+    } else {
+      Data.Channels[channelIndex].id = channelId;
+      Data.Channels[channelIndex].event.maxUsers = maxUsers;
+    }
   }
   saveDatabase();
   console.log(added ? 'New channel added' : 'Channel exists');
@@ -108,7 +114,7 @@ exports.startEvent = function (userId, channelId, timeout, maxUsers) {
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
   Data.Channels[channelIndex].event.maxUsers = maxUsers,
-  Data.Channels[channelIndex].event.listOfUsers = [];
+    Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
   console.log('event started');
@@ -157,12 +163,12 @@ exports.getDataBaseContent = function () {
   return Data;
 }
 
-function saveDatabase () {
-  fs.writeFileSync(config.getDBPath(),JSON.stringify(Data), 'utf8');
+function saveDatabase() {
+  fs.writeFileSync(config.getDBPath(), JSON.stringify(Data), 'utf8');
 };
 
 function readDatabase() {
   var path = config.getDBPath();
-  var txt = fs.readFileSync(path,'utf8');
+  var txt = fs.readFileSync(path, 'utf8');
   Data = JSON.parse(txt);
 };
