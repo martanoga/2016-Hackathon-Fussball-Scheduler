@@ -1,6 +1,6 @@
 angular.module('fussball.scheduler.channels', [])
 
-  .controller('ChannelsController', function ($mdToast, $http, $scope, channels, Channels, notifications, Notifications) {
+  .controller('ChannelsController', function ($mdToast, $mdDialog, $http, $scope, channels, Channels, notifications, Notifications) {
     $scope.currentNavItem = 'page1';
     console.log('Hello from channels controller');
     $scope.channels = channels;
@@ -49,11 +49,28 @@ angular.module('fussball.scheduler.channels', [])
       this.channel.joined = false;
       Notifications.unsubscribe(this.channel.id);
     };
-    $scope.startEvent = function () {
+    $scope.startEvent = function (ev) {
       console.log("Start event", this.channel.name);
-      //TBD: post to server
-      //this should be done in callabck
-      this.channel.eventInProgress = true;
+      var channel = this.channel;
+      var confirm = $mdDialog.prompt()
+        .title('Do you really want to start an event?')
+        .textContent('How long would you like to wait for other users to join your event?')
+        .placeholder('Subscription timeout')
+        .ariaLabel('Subscription timeout')
+        .initialValue('15')
+        .targetEvent(ev)
+        .ok('Start!')
+        .cancel('Maybe not...');
+      $mdDialog.show(confirm).then(function (result) {
+        $http({
+          method: 'POST',
+          url: '/api/channel/startevent',
+          data: { channelId: channel.id, timeout: result, maxUSer: 15 }
+        })
+          .then(function (resp) {
+            channel.eventInProgress = true;
+          });
+      });
     };
     $scope.joinEvent = function (channel) {
       if (!channel) {
@@ -72,7 +89,7 @@ angular.module('fussball.scheduler.channels', [])
       $scope.subscribeCallback({ type: "HAPPEN" }, $scope.channels[0].id);
     }
 
-    $scope.startEvent = function () {
+    $scope.startEventFake = function () {
       $scope.subscribeCallback({ type: "START" }, $scope.channels[0].id);
     }
 
@@ -105,6 +122,8 @@ angular.module('fussball.scheduler.channels', [])
         };
       });
     }
+
+
   })
 
   .directive('channel', function () {
