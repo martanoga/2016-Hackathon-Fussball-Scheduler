@@ -9,7 +9,7 @@ router.get('/channels', function (req, res, next) {
   var userId = req.query.userId;
   var channels = database.getChannels(userId);
   if (Object.keys(channels).length === 0) {
-    res.send(404);
+    res.send(401);
   } else {
     res.send(JSON.stringify(channels));
   }
