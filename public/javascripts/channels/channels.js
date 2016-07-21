@@ -8,9 +8,11 @@ angular.module('fussball.scheduler.channels', [])
 
     for (var i = 0; i < channels.length; i++) {
       if (channels[i].subscribed) {
-        Notifications.subscribe(channels[i].id, function (m) {
-          $scope.subscribeCallback(m, channels[i].id);
-        });
+        var id = channels[i].id;
+        var cb = function (m) {
+          $scope.subscribeCallback(m, id);
+        };
+        Notifications.subscribe(channels[i].id, cb);
       }
     }
 
@@ -100,21 +102,30 @@ angular.module('fussball.scheduler.channels', [])
     }
 
     $scope.subscribeCallback = function (m, channelId) {
-      if (m.type === 'HAPPEN') {
-        Channels.onEventHappens(channelId, function (channel) {
-          $scope.displayToast(channel.name + " is happening!");
+      console.log("notification!");
+      $http({
+        method: 'POST',
+        url: '/api/notification/decryp',
+        data: { message: m }
+      })
+        .then(function (resp) {
+          var m = resp.data.message;
+          if (m.type === 'HAPPEN') {
+            Channels.onEventHappens(channelId, function (channel) {
+              $scope.displayToast(channel.name + " is happening!");
+            });
+          } else if (m.type === 'CANCEL') {
+            Channels.onEventCanceled(channelId, function (channel) {
+              $scope.displayToast(channel.name + " is canceled!");
+            });
+          } else if (m.type === 'START') {
+            Channels.onEventStarted(channelId, function (channel) {
+              $scope.displayToast(channel.name + " started!", "JOIN", function () {
+                $scope.joinEvent(channel);
+              });
+            });
+          }
         });
-      } else if (m.type === 'CANCEL') {
-        Channels.onEventCanceled(channelId, function (channel) {
-          $scope.displayToast(channel.name + " is canceled!");
-        });
-      } else if (m.type === 'START') {
-        Channels.onEventStarted(channelId, function (channel) {
-          $scope.displayToast(channel.name + " started!", "JOIN", function () {
-            $scope.joinEvent(channel);
-          });
-        });
-      }
     }
 
     $scope.displayToast = function (message, action, callback) {
@@ -139,8 +150,9 @@ angular.module('fussball.scheduler.channels', [])
   })
   .factory('Notifications', function () {
     var notifications = [];
+    var userData = JSON.parse(localStorage.getItem('fussball.scheduler'));
     var pubnub = PUBNUB({
-      subscribe_key: 'SUBSCRIBE_KEY'
+      subscribe_key: userData.subscribeKey
     });
     return {
       subscribe: function (channelId, callback) {

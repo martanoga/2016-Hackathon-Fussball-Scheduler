@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var CryptoJS = require('crypto-js');
 
 var database = require('../database/database.js');
+var credentials = require('../credentials.js');
 
 router.get('/channels', function (req, res, next) {
 
@@ -68,6 +70,23 @@ router.post('/channel/unjoinevent', function (req, res, next) {
   // } else {
   //   res.send(500);
   // }
+});
+
+router.post('/notification/decryp', function (req, res) {
+  var encryptedMessage = req.body.message;
+
+  var iv = CryptoJS['enc']['Utf8'].parse('0123456789012345');
+  var mode = CryptoJS['mode']['CBC'];
+
+  var hash = CryptoJS.SHA256(credentials.CIPHER_KEY).toString(CryptoJS.enc.Hex).slice(0, 32);
+  var cipher_key = CryptoJS['enc']['Utf8'].parse(hash);
+
+  var binary_enc = CryptoJS['enc']['Base64'].parse(encryptedMessage);
+
+  var decrypted = CryptoJS['AES'].decrypt({ ciphertext: binary_enc }, cipher_key, { iv: iv, mode: mode });
+  var decoded = decrypted.toString(CryptoJS['enc'].Utf8);
+  res.send(decoded);
+
 });
 
 // developer tools
