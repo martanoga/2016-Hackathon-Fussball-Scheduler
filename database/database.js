@@ -180,5 +180,7 @@ function saveDatabase () {
 };
 
 function readDatabase() {
-  return JSON.parse(fs.readFileSync(config.getDBPath(),'utf8'));
+  var path = config.getDBPath();
+  var txt = fs.readFileSync(path,'utf8');
+  return JSON.parse(txt);
 };

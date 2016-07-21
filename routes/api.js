@@ -67,7 +67,7 @@ function setUserId(userId, req) {
 }
 
 function getUserId(req) {
-  return global.userId;
+  return req.query.userId;
 }
 
 module.exports = router;
