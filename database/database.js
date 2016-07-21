@@ -151,7 +151,7 @@ exports.joinEvent = function(userId,channelId){
     return false;
   }
 
-  var userInEventIndex = _.findIndex(Data.Users, { id: userId });
+  var userInEventIndex = _.findIndex(Data.Channels[channelIndex].event.listOfUsers, userId );
   if (userInEventIndex !== -1) {
     console.log('User already participates!');
     return false;
