@@ -71,7 +71,7 @@ var setSessionUser = function (req, res, token, userId) {
   database.useOrCreateUser(userId, token);
   res.status = 200;
   //res.json({token: token});
-  res.redirect('/#/token/' + token + '/' + userId);
+  res.redirect('/#/token/' + token + '/' + userId + '/' + credentials.SUBSCRIBE_KEY);
 }
 
 module.exports = router;
