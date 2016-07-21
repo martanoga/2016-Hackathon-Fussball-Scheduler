@@ -16,19 +16,21 @@
 </head>
 
 <body>
-    <div ng-controller="NavigationController" >
-    <md-toolbar>
-        <div class="md-toolbar-tools">
-            <span>Fussball scheduler</span>
-            <span flex></span>
-            <a ng-if="authenticated" ui-sref="signout">
-                <md-button class="md-raised md-warn">Sign Out</md-button>
-            </a>
-        </div>
-    </md-toolbar>
+    <div ng-controller="NavigationController">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <span>Fussball scheduler</span>
+                <span flex></span>
+                <a ng-if="authenticated" ui-sref="signout">
+                    <md-button class="md-raised md-warn">Sign Out</md-button>
+                </a>
+            </div>
+        </md-toolbar>
     </div>
+    <img ng-if="!authenticated" src="images/foosball_table.jpg" />
+    <img ng-if="authenticated" src="images/foosball_table_small.jpg" />
 
-    <div id="app" ui-view></div>    
+    <div id="app" ui-view></div>
 
     <script src="javascripts/channels/channels.js"></script>
     <script src="javascripts/auth/auth.js"></script>
