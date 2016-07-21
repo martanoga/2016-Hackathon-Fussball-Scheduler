@@ -8,7 +8,11 @@ var database = require('../database/database.js');
 router.get('/channels', function (req, res, next) {
   var userId = req.query.userId;
   var channels = database.getChannels(userId);
-  res.send(JSON.stringify(channels));
+  if (Object.keys(channels).length === 0) {
+    res.send(404);
+  } else {
+    res.send(JSON.stringify(channels));
+  }
 });
 
 router.post('/channels/join', function (req, res, next) {
@@ -27,7 +31,7 @@ router.post('/channel/startevent', function (req, res, next) {
   var timeout = req.body.timeout;
   var maxUsers = req.body.maxUsers;
   var userId = getUserId(req);
-  if (database.startEvent(userId,channelId,timeout,maxUsers)) {
+  if (database.startEvent(userId, channelId, timeout, maxUsers)) {
     res.send(200);
   } else {
     res.send(500);
@@ -37,7 +41,7 @@ router.post('/channel/startevent', function (req, res, next) {
 router.post('/channel/joinevent', function (req, res, next) {
   var channelId = req.body.channelId;
   var userId = getUserId(req);
-  if (database.joinEvent(userId,channelId)) {
+  if (database.joinEvent(userId, channelId)) {
     res.send(200);
   } else {
     res.send(500);
@@ -56,19 +60,19 @@ router.get('/db', function (req, res, next) {
 });
 
 router.post('/fake-login', function (req, res, next) {
-  setUserId(req.body.userId,req);
-  res.send(200); 
+  setUserId(req.body.userId, req);
+  res.send(200);
 });
 
 
-function setUserId(userId, req){
+function setUserId(userId, req) {
   database.addUser(userId);
   req.session.userId = userId;
   req.session.save();
   global.userId = req.session.userId;
 }
 
-function getUserId(req){
+function getUserId(req) {
   return global.userId;
 }
 

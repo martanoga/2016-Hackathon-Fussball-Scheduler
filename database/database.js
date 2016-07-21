@@ -16,12 +16,10 @@ var Data = {
       name: 'fussball',
       event: {
         state: 0, // ACTIVE = 1, 
-        author: '1235',
-        timeout: 1234567890123,
+        author: '',
+        timeout: 0,
         maxUsers: 4,
-        listOfUsers: [
-          '1235'
-        ]
+        listOfUsers: []
       }
     },
     {
@@ -29,12 +27,10 @@ var Data = {
       name: 'pizza',
       event: {
         state: 0, // ACTIVE = 1, 
-        author: '1235',
-        timeout: 1234567890123,
+        author: '',
+        timeout: 0,
         maxUsers: 1000,
-        listOfUsers: [
-          '1235',
-        ]
+        listOfUsers: []
       }
     }
   ]
