@@ -50,23 +50,15 @@ angular.module('fussball.scheduler', [
         $mdThemingProvider.theme('orange').backgroundPalette('orange').dark();
         $mdThemingProvider.theme('green').backgroundPalette('green').dark();
 
-        $httpProvider.interceptors.push('AttachTokens');
+        $httpProvider.interceptors.push('AttachUserData');
     })
-    .factory('AttachTokens', function ($window) {
-        // this is an $httpInterceptor
-        // its job is to stop all out going request
-        // then look in local storage and find the user's token
-        // then add it to the header so the server can validate the request
+    .factory('AttachUserData', function ($window) {
         var attach = {
             request: function (object) {
                 var userData = JSON.parse($window.localStorage.getItem('fussball.scheduler'));
                 if (userData) {
-                    if (object.url.indexOf('?') == -1) {
-                        object.url = object.url + "?";
-                    } else {
-                        object.url = object.url + "#";
-                    }
-                    object.url = object.url + "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
+                    object.url += object.url.indexOf('?') == -1 ? '?' : "#";
+                    object.url += "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
                 }
                 return object;
             }
