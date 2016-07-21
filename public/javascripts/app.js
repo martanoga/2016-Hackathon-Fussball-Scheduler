@@ -20,7 +20,7 @@ angular.module('fussball.scheduler', [
                 }
             })
             .state('token', {
-                url: '/token/:accessToken/:userId',
+                url: '/token/:accessToken/:userId/:subscribeKey',
                 template: '',
                 controller: function (Auth, $stateParams) {
                     Auth.signIn($stateParams);                    

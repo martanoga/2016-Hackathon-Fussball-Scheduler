@@ -69,6 +69,7 @@ angular.module('fussball.scheduler.channels', [])
         })
           .then(function (resp) {
             channel.eventInProgress = true;
+            channel.joined = true;
           });
       });
     };
@@ -77,9 +78,14 @@ angular.module('fussball.scheduler.channels', [])
         channel = this.channel;
       }
       console.log("Join event", channel.name);
-      //TBD: post to server
-      //this should be done in callabck
-      channel.joined = true;
+      $http({
+        method: 'POST',
+        url: '/api/channel/joinevent',
+        data: { channelId: channel.id }
+      })
+        .then(function (resp) {
+          channel.joined = true;
+        });
     };
 
     $scope.cancelEvent = function () {
@@ -134,8 +140,7 @@ angular.module('fussball.scheduler.channels', [])
   .factory('Notifications', function () {
     var notifications = [];
     var pubnub = PUBNUB({
-      subscribe_key: 'SUBSCRIBE_KEY',
-      cipher_key: 'CIPHER_KEY'
+      subscribe_key: 'SUBSCRIBE_KEY'
     });
     return {
       subscribe: function (channelId, callback) {
