@@ -60,13 +60,14 @@ angular.module('fussball.scheduler', [
         var attach = {
             request: function (object) {
                 var userData = JSON.parse($window.localStorage.getItem('fussball.scheduler'));
-                if( object.url.indexOf('?') ==  -1 ){
-                    object.url = object.url + "?";
-                }else{
-                    object.url = object.url + "#";
+                if (userData) {
+                    if (object.url.indexOf('?') == -1) {
+                        object.url = object.url + "?";
+                    } else {
+                        object.url = object.url + "#";
+                    }
+                    object.url = object.url + "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
                 }
-                
-                object.url = object.url + "userId=" + userData.userId + "#accessToken=" + userData.accessToken;
                 return object;
             }
         };
