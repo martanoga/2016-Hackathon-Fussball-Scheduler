@@ -68,7 +68,7 @@ router.get('/authorization', function (req, res, next) {
 });
 
 var setSessionUser = function (req, res, token, userId) {
-  database.addUser(userId, token);
+  database.useOrCreateUser(userId, token);
   res.status = 200;
   //res.json({token: token});
   res.redirect('/#/token/' + token + '/' + userId);
