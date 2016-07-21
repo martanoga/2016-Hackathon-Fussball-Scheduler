@@ -16,17 +16,19 @@
 </head>
 
 <body>
+    <div ng-controller="NavigationController" >
     <md-toolbar>
         <div class="md-toolbar-tools">
             <span>Fussball scheduler</span>
             <span flex></span>
-            <a ui-sref="signout">
+            <a ng-if="authenticated" ui-sref="signout">
                 <md-button class="md-raised md-warn">Sign Out</md-button>
             </a>
         </div>
     </md-toolbar>
+    </div>
 
-    <div id="app" ui-view></div>
+    <div id="app" ui-view></div>    
 
     <script src="javascripts/channels/channels.js"></script>
     <script src="javascripts/auth/auth.js"></script>
