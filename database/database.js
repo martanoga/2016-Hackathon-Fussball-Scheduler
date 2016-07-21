@@ -100,6 +100,8 @@ exports.startEvent = function (userId, channelId, timeout, maxUsers) {
     return false;
   }
 
+  var channelName = Data.Channels[channelIndex].name;
+
   if (!Data.Users[userIndex].channels[channelId]) {
     console.log('User not subscribed to channel!');
     return false;
@@ -115,9 +117,12 @@ exports.startEvent = function (userId, channelId, timeout, maxUsers) {
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
   Data.Channels[channelIndex].event.maxUsers = maxUsers,
-    Data.Channels[channelIndex].event.listOfUsers = [];
+  Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
+
+  notifications.sendEvent(channelName, 'START');
+
   console.log('event started');
   return true;
 
@@ -174,7 +179,7 @@ exports.closeEvent = function (event, channelName) {
     event.timeout = 0;
     event.author = '';
 
-    notifications.eventHappens(channelName);
+    notifications.sendEvent(channelName, 'HAPPENS');
   }
 }
 
