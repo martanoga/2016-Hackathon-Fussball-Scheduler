@@ -118,7 +118,7 @@ angular.module('fussball.scheduler.channels', [])
                 $scope.showStartDialog(channel, textContent, actionName);
               }
             });
-          } else if (m.type === 'CANCEL') {
+          } else if (m.type === 'CANCELLED') {
             Channels.onEventCanceled(channelId, function (channel, displayNotification) {
               if (displayNotification) {
                 var textContent = "Event is not happening :(";
@@ -150,15 +150,20 @@ angular.module('fussball.scheduler.channels', [])
         };
       });
     }
-    $scope.showStartDialog = function (channel) {
+    $scope.showStartDialog = function (channel, textContent, actionName) {
       var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+      var locals = {
+        channel: channel,
+        textContent: textContent,
+        actionName: actionName
+      }
       $mdDialog.show({
         controller: DialogController,
         templateUrl: 'javascripts/channels/dialog.html',
         parent: angular.element(document.body),
         clickOutsideToClose: false,
         fullscreen: useFullScreen,
-        locals: { channel: channel }
+        locals: locals
       })
         .then(function () {
           console.log("GO");
@@ -265,7 +270,7 @@ angular.module('fussball.scheduler.channels', [])
 function DialogController($scope, $mdDialog, channel, textContent, actionName) {
   $scope.channel = channel;
   $scope.textContent = textContent;
-  $scopoe.actionName = actionName;
+  $scope.actionName = actionName;
   $scope.go = function () {
     $mdDialog.hide();
   };
