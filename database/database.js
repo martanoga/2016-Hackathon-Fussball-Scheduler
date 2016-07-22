@@ -1,3 +1,7 @@
+//{"Users":[{"id":"1235","channels":{"1":"1","2":"2"},"name":"Stanislaw","token":"1235"}],"Channels":[{"id":"1","name":"fussball","event":{"state":0,"author":"","timeout":0,"minUsers":4,"maxUsers":4,"listOfUsers":[]}},{"id":"2","name":"pizza","event":{"state":0,"author":"","timeout":0,"minUsers":1,//"maxUsers":1000,"listOfUsers":[]}}]}
+
+
+
 var _ = require('underscore');
 var fs = require('fs');
 var config = require('../config');
@@ -20,7 +24,8 @@ exports.getChannels = function (userId) {
       id: item.id,
       name: item.name,
       subscribed: usersChannels[item.id] !== undefined,
-      eventInProgress: item.event.state
+      eventInProgress: item.event.state,
+      joined: _.findIndex(item.event.listOfUsers, { userId })!=-1
     };
   });
   return channels;
@@ -49,13 +54,13 @@ exports.joinChannel = function (channelId, userId) {
   return true;
 };
 
-exports.useOrCreateUser = function (userId, token) {
+exports.useOrCreateUser = function (userId, name, photo, token) {
   readDatabase();
   var userIndex = _.findIndex(Data.Users, { id: userId });
   var added = false;
   if (userIndex === -1) {
     var added = true;
-    Data.Users.push({ id: userId, token: token, channels: {} });
+    Data.Users.push({ id:userId, name:name, photo:photo, token:token, channels: {} });
   }
   else {
     Data.Users[userIndex].token = token;
@@ -167,28 +172,52 @@ exports.joinEvent = function (userId, channelId) {
   event.listOfUsers.push(userId);
   console.log('User joined event');
 
-  exports.closeEvent(event, channelName);
   saveDatabase();
   return true;
 };
 
-exports.closeEvent = function (event, channelName) {
-
-  if (event.listOfUsers.length >= event.maxUsers) {
-
-    event.state = 0;
-    event.listOfUsers = [];
-    event.timeout = 0;
-    event.author = '';
-
-    notifications.sendEvent(channelName, 'HAPPENS');
+function getEventState( index ){
+  if(index===-1){
+    return null;
   }
+  var event = Data.Channels[index].event;
+  var timeOutPassed = Date.now() - event.timeout < 0;
+  var nofUsers = event.listOfUsers.length;
+  if( event.maxUsers<=nofUsers ){ 
+    return 'HAPPENS';
+  } else if( timeOutPassed ){
+    return event.minUsers>nofUsers ? 'CANCELLED' : 'HAPPENS';
+  } else {
+    return 'INPROGRESS'
+  } 
 }
+
+function closeFinishedEvent( index ) {
+  if(index!=-1){
+    var state = getEventState( index );
+    if(state==='HAPPENS' || state==='CANCELLED'){
+      Data.Channels[channelIndex].event.state = 0;
+      Data.Channels[channelIndex].event.listOfUsers = [];
+      Data.Channels[channelIndex].event.timeout = 0;
+      Data.Channels[channelIndex].event.author = '';
+      notifications.sendEvent(channelName, state);
+    }
+  }
+};
 
 exports.getDataBaseContent = function () {
   readDatabase();
   return Data;
 }
+
+readDatabase();
+setInterval(function() { 
+  for( var i=0; i<Data.Channels.length; i++){
+    closeFinishedEvent(i);
+  }
+}, 2000);
+
+
 
 function saveDatabase() {
   fs.writeFileSync(config.getDBPath(), JSON.stringify(Data), 'utf8');
