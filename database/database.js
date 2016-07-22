@@ -215,7 +215,7 @@ function closeFinishedEvent( index ) {
       Data.Channels[index].event.timeout = 0;
       Data.Channels[index].event.author = '';
       notifications.sendEvent(Data.Channels[index].name, status);
-      //notifications.sendEvent({name:Data.Channels[index].name,status:status,eventUsers:evUsers });
+      notifications.sendEvent(Data.Channels[index].name,JSON.stringify({type:status,eventUsers:evUsers }) );
     }
   }
 };
