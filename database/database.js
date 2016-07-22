@@ -192,12 +192,12 @@ function getEventStatus( index ){
   } 
 }
 
-function getEventUsers( channelIndex ){
+function getEventUsers( index ){
   if(  index>=Data.Channels.length || index<0  ){
     return [];
   }
 
-  return _.map(Data.Channels[channelIndex].listOfUsers, function (item) {
+  return _.map(Data.Channels[index].listOfUsers, function (item) {
     return {
       name:item.name,
       photo:item.photo
