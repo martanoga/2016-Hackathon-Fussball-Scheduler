@@ -39,6 +39,7 @@ angular.module('fussball.scheduler.channels', [])
         .then(function (resp) {
           channel.subscribed = true;
           channel.eventInProgress = resp.data.eventInProgress;
+          channel.subscribersCount = resp.data.subscribersCount;
           Notifications.subscribe(channel.id, function (m) {
             $scope.subscribeCallback(m, channel.id);
           });
