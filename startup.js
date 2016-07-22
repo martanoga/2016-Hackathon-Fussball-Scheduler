@@ -71,10 +71,10 @@ function checkChannel(channelName, minUsers, maxUsers) {
           }
         }
       );
-    })
-    .then(function (result) {
-      return result;
     });
+    // .then(function (result) {
+    //   return result;
+    // });
 };
 
 

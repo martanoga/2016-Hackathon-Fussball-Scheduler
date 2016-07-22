@@ -71,7 +71,7 @@ var setSessionUser = function (req, res, token, userData) {
 
   var userId = userData.userId;
   var userName = userData.firstName + ' ' + userData.lastName;
-  var userPhoto = userData.profileImages;
+  var userPhoto = userData.profileImages.sizeX58;
 
   database.useOrCreateUser(userId, userName, userPhoto, token);
   res.status = 200;
