@@ -189,7 +189,8 @@ angular.module('fussball.scheduler.channels', [])
     var notifications = [];
     var userData = JSON.parse(localStorage.getItem('fussball.scheduler'));
     var pubnub = PUBNUB({
-      subscribe_key: userData.subscribeKey
+      subscribe_key: userData.subscribeKey,
+      ssl: true
     });
     return {
       subscribe: function (channelId, callback) {
