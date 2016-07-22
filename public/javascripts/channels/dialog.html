@@ -1,0 +1,23 @@
+<md-dialog aria-label="Mango (Fruit)"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{channel.name}}</h2>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+            {{textContent}}
+      </div>
+
+      
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+
+      <md-button class="md-primary md-raised" ng-click="go()" md-autofocus>
+        {{actionName}}
+      </md-button>
+    </md-dialog-actions>
+  </form>
+  
+</md-dialog>

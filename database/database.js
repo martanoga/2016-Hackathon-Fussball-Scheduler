@@ -122,8 +122,8 @@ exports.startEvent = function (userId, channelId, timeout, minUsers, maxUsers) {
   Data.Channels[channelIndex].event.state = 1;
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
-  Data.Channels[channelIndex].event.minUsers = minUsers,
-  Data.Channels[channelIndex].event.maxUsers = maxUsers,
+  Data.Channels[channelIndex].event.minUsers = minUsers ? minUsers : 0,
+  Data.Channels[channelIndex].event.maxUsers = maxUsers ? maxUsers : 10000,
   Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
@@ -176,12 +176,12 @@ exports.joinEvent = function (userId, channelId) {
   return true;
 };
 
-function getEventState( index ){
-  if(index===-1){
+function getEventStatus( index ){
+  if(  index>=Data.Channels.length || index<0  ){
     return null;
   }
   var event = Data.Channels[index].event;
-  var timeOutPassed = Date.now() - event.timeout < 0;
+  var timeOutPassed = event.timeout - Date.now() < 0;
   var nofUsers = event.listOfUsers.length;
   if( event.state!=1){
     return 'NOTSTARTED';
@@ -194,15 +194,36 @@ function getEventState( index ){
   } 
 }
 
+function getEventUsers( channelIndex ){
+  // if(  index>=Data.Channels.length || index<0  ){
+  //   return {}};
+  // }
+  // var event = Data.Channels[index].event;
+  // var timeOutPassed = event.timeout - Date.now() < 0;
+  // var nofUsers = event.listOfUsers.length;
+
+
+  
+  // if( event.state!=1){
+  //   return 'NOTSTARTED';
+  // } else if( event.maxUsers<=nofUsers ){ 
+  //   return 'HAPPENS';
+  // } else if( timeOutPassed ){
+  //   return event.minUsers>nofUsers ? 'CANCELLED' : 'HAPPENS';
+  // } else {
+  //   return 'INPROGRESS'
+  // } 
+}
+
 function closeFinishedEvent( index ) {
   if(index!=-1){
-    var state = getEventState( index );
-    if(state==='HAPPENS' || state==='CANCELLED'){
-      Data.Channels[channelIndex].event.state = 0;
-      Data.Channels[channelIndex].event.listOfUsers = [];
-      Data.Channels[channelIndex].event.timeout = 0;
-      Data.Channels[channelIndex].event.author = '';
-      notifications.sendEvent(channelName, state);
+    var status = getEventStatus( index );
+    if(status==='HAPPENS' || status==='CANCELLED'){
+      Data.Channels[index].event.state = 0;
+      Data.Channels[index].event.listOfUsers = [];
+      Data.Channels[index].event.timeout = 0;
+      Data.Channels[index].event.author = '';
+      notifications.sendEvent(Data.Channels[index].name, status);
     }
   }
 };
