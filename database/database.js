@@ -19,12 +19,21 @@ exports.getChannels = function (userId) {
   var usersChannels = Data.Users[index].channels;
 
   var channels = _.map(Data.Channels, function (item) {
+
+    var subscribers = 0;
+    for (var k = 0; k < Data.Users.length; k++) {
+      if (Data.Users[k].channels[item.id] !== undefined) {
+        subscribers++;
+      }
+    }
+
     return {
       id: item.id,
       name: item.name,
       subscribed: usersChannels[item.id] !== undefined,
       eventInProgress: item.event.state,
-      joined: _.findIndex(item.event.listOfUsers, { userId })!=-1
+      joined: _.findIndex(item.event.listOfUsers, { userId }) != -1,
+      subscribersCount: subscribers
     };
   });
   return channels;
@@ -75,7 +84,7 @@ exports.useOrCreateUser = function (userId, name, photo, token) {
   var added = false;
   if (userIndex === -1) {
     var added = true;
-    Data.Users.push({ id:userId, name:name, photo:photo, token:token, channels: {} });
+    Data.Users.push({ id: userId, name: name, photo: photo, token: token, channels: {} });
   }
   else {
     Data.Users[userIndex].token = token;
@@ -94,7 +103,7 @@ exports.createChannel = function (channelId, name, minUsers, maxUsers) {
     channelIndex = _.findIndex(Data.Channels, { name: name });
     if (channelIndex === -1) {
       var added = true;
-      var channel = { id: channelId, name: name, event: { state: 0, author: '', timeout: 0, minUsers : minUsers, maxUsers: maxUsers, listOfUsers: [] } };
+      var channel = { id: channelId, name: name, event: { state: 0, author: '', timeout: 0, minUsers: minUsers, maxUsers: maxUsers, listOfUsers: [] } };
       Data.Channels.push(channel);
     } else {
       Data.Channels[channelIndex].id = channelId;
@@ -140,7 +149,7 @@ exports.startEvent = function (userId, channelId, timeout) {
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
 
-  notifications.sendEvent(channelName, JSON.stringify({type:'START'})); 
+  notifications.sendEvent(channelName, JSON.stringify({ type: 'START' }));
 
   console.log('event started');
   return true;
@@ -188,49 +197,49 @@ exports.joinEvent = function (userId, channelId) {
   return true;
 };
 
-function getEventStatus( index ){
-  if(  index>=Data.Channels.length || index<0  ){
+function getEventStatus(index) {
+  if (index >= Data.Channels.length || index < 0) {
     return null;
   }
   var event = Data.Channels[index].event;
   var timeOutPassed = event.timeout - Date.now() < 0;
   var nofUsers = event.listOfUsers.length;
-  if( event.state!=1){
+  if (event.state != 1) {
     return 'NOTSTARTED';
-  } else if( event.maxUsers<=nofUsers ){ 
+  } else if (event.maxUsers <= nofUsers) {
     return 'HAPPENS';
-  } else if( timeOutPassed ){
-    return event.minUsers>nofUsers ? 'CANCELLED' : 'HAPPENS';
+  } else if (timeOutPassed) {
+    return event.minUsers > nofUsers ? 'CANCELLED' : 'HAPPENS';
   } else {
     return 'INPROGRESS'
-  } 
+  }
 }
 
-function getEventUsers( index ){
-  if(  index>=Data.Channels.length || index<0  ){
+function getEventUsers(index) {
+  if (index >= Data.Channels.length || index < 0) {
     return [];
   }
 
-  return _.map(Data.Channels[index].event.listOfUsers, function (item){ 
+  return _.map(Data.Channels[index].event.listOfUsers, function (item) {
     var userIndex = _.findIndex(Data.Users, { id: item });
     var user = Data.Users[userIndex];
     return {
-      name:user.name,
-      photo:user.photo
+      name: user.name,
+      photo: user.photo
     };
   });
 }
 
-function closeFinishedEvent( index ) {
-  if(index!=-1){
-    var status = getEventStatus( index );
-    if(status==='HAPPENS' || status==='CANCELLED'){
+function closeFinishedEvent(index) {
+  if (index != -1) {
+    var status = getEventStatus(index);
+    if (status === 'HAPPENS' || status === 'CANCELLED') {
       var evUsers = getEventUsers(index);
       Data.Channels[index].event.state = 0;
       Data.Channels[index].event.listOfUsers = [];
       Data.Channels[index].event.timeout = 0;
       Data.Channels[index].event.author = '';
-      notifications.sendEvent(Data.Channels[index].name,JSON.stringify({type:status,eventUsers:evUsers }) );
+      notifications.sendEvent(Data.Channels[index].name, JSON.stringify({ type: status, eventUsers: evUsers }));
     }
   }
 };
@@ -241,9 +250,9 @@ exports.getDataBaseContent = function () {
 }
 
 readDatabase();
-setInterval(function() { 
+setInterval(function () {
   readDatabase();
-  for( var i=0; i<Data.Channels.length; i++){
+  for (var i = 0; i < Data.Channels.length; i++) {
     closeFinishedEvent(i);
   }
   saveDatabase();
