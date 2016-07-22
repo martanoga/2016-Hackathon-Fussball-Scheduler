@@ -42,8 +42,6 @@ router.post('/channel/startevent', function (req, res, next) {
   var channelId = req.body.channelId;
   var timeout = req.body.timeout;
   timeout = Date.now() + timeout * 60 * 1000;
-  var minUsers = req.body.minUsers;
-  var maxUsers = req.body.maxUsers;
   var userId = getUserId(req);
   if (database.startEvent(userId, channelId, timeout, minUsers, maxUsers)) {
     res.send(200);
