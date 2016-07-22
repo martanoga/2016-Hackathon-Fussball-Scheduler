@@ -19,8 +19,8 @@ function getToken() {
     request.post({
       url: url,
       form: {
-        client_id: credentials.CLIENT_ID,
-        client_secret: credentials.CLIENT_SECRET,
+        client_id: process.env.CLIENT_ID || credentials.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET ||credentials.CLIENT_SECRET,
         grant_type: 'client_credentials',
         scope: 'data:read'
       },

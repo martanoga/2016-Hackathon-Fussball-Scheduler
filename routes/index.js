@@ -14,17 +14,17 @@ router.get('/', function (req, res, next) {
 
 router.get('/loginAutodesk', function (req, res, next) {
 
-  var path = config.getADSKAuthPath() + '?client_id=' + credentials.AUTH_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(credentials.AUTH_REDIRECT_URI) + '&scope=data:read';
+  var path = config.getADSKAuthPath() + '?client_id=' + (process.env.AUTH_CLIENT_ID || credentials.AUTH_CLIENT_ID) + '&response_type=code&redirect_uri=' + encodeURIComponent(process.env.AUTH_REDIRECT_URI || credentials.AUTH_REDIRECT_URI) + '&scope=data:read';
   res.redirect(path);
 });
 
 router.get('/authorization', function (req, res, next) {
 
   var options = {
-    'client_id': credentials.AUTH_CLIENT_ID,
-    'client_secret': credentials.AUTH_CLIENT_SECRET,
+    'client_id': process.env.AUTH_CLIENT_ID || credentials.AUTH_CLIENT_ID,
+    'client_secret': process.env.AUTH_CLIENT_SECRET || credentials.AUTH_CLIENT_SECRET,
     'grant_type': 'authorization_code',
-    'redirect_uri': credentials.AUTH_REDIRECT_URI,
+    'redirect_uri': process.env.AUTH_REDIRECT_URI || credentials.AUTH_REDIRECT_URI,
     'code': req.query.code
   };
 
@@ -75,7 +75,7 @@ var setSessionUser = function (req, res, token, userData) {
 
   database.useOrCreateUser(userId, userName, userPhoto, token);
   res.status = 200;
-  res.redirect('/#/token/' + token + '/' + userId + '/' + credentials.SUBSCRIBE_KEY);
+  res.redirect('/#/token/' + token + '/' + userId + '/' + (process.env.SUBSCRIBE_KEY || credentials.SUBSCRIBE_KEY));
 }
 
 module.exports = router;

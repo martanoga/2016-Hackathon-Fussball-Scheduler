@@ -76,7 +76,7 @@ router.post('/notification/decryp', function (req, res) {
   var iv = CryptoJS['enc']['Utf8'].parse('0123456789012345');
   var mode = CryptoJS['mode']['CBC'];
 
-  var hash = CryptoJS.SHA256(credentials.CIPHER_KEY).toString(CryptoJS.enc.Hex).slice(0, 32);
+  var hash = CryptoJS.SHA256(process.env.CIPHER_KEY || credentials.CIPHER_KEY).toString(CryptoJS.enc.Hex).slice(0, 32);
   var cipher_key = CryptoJS['enc']['Utf8'].parse(hash);
 
   var binary_enc = CryptoJS['enc']['Base64'].parse(encryptedMessage);
