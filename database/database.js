@@ -227,7 +227,9 @@ exports.getDataBaseContent = function () {
 readDatabase();
 setInterval(function() { 
   for( var i=0; i<Data.Channels.length; i++){
+    readDatabase();
     closeFinishedEvent(i);
+    saveDatabase();
   }
 }, 2000);
 
