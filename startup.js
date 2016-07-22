@@ -9,6 +9,7 @@ var config = require('./config.js')
 
 var accessToken;
 
+
 function getToken() {
 
   var url = config.getADSKAuthenticatePath();
@@ -33,7 +34,8 @@ function getToken() {
         } else {
           response.status = 200;
           token = JSON.parse(body).access_token;
-          //response.send(JSON.parse(body).access_token);
+          expires = JSON.parse(body).expires_in - 1;
+          setTimeout(getToken, 1000 * expires);
           resolve(token);
         }
       }
@@ -72,9 +74,6 @@ function checkChannel(channelName, minUsers, maxUsers) {
         }
       );
     });
-    // .then(function (result) {
-    //   return result;
-    // });
 };
 
 
