@@ -1,4 +1,4 @@
-<md-dialog aria-label="Mango (Fruit)"  ng-cloak>
+<md-dialog aria-label="Mango (Fruit)" ng-cloak>
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools">
@@ -7,10 +7,20 @@
     </md-toolbar>
     <md-dialog-content>
       <div class="md-dialog-content">
-            {{textContent}}
+        {{textContent}}
       </div>
 
-      
+      <md-content class='md-padding' layout="row" flex layout-align="center center">
+          <md-card class="card" ng-repeat="user in users">
+            <img class="userthumnail" ng-src="{{user.photo}}" alt="{{user.name}}" />
+            <md-tooltip md-direction="right">
+              {{user.name}}
+            </md-tooltip>
+          </md-card>
+      </md-content>
+
+
+
     </md-dialog-content>
     <md-dialog-actions layout="row">
 
@@ -19,5 +29,5 @@
       </md-button>
     </md-dialog-actions>
   </form>
-  
+
 </md-dialog>

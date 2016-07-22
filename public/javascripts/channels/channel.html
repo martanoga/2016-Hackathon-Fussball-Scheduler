@@ -8,7 +8,7 @@
             <div class="md-media-md card-media"></div>
         </md-card-title-media>
     </md-card-title>
-    <md-card-actions layout="row" layout-align="end center">
+    <md-card-actions layout="row"   layout-align="end center">
         <md-button ng-if="!channel.subscribed" ng-click="subscribe()">Subscribe</md-button>
         <!--md-button ng-if="channel.subscribed" ng-click="unsubscribe()">Unsubscribe</md-button-->
         <md-button ng-if="channel.eventInProgress&&channel.subscribed" ng-disabled="channel.joined" ng-click="joinEvent()">Join</md-button>

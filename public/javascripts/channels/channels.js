@@ -111,11 +111,12 @@ angular.module('fussball.scheduler.channels', [])
         .then(function (resp) {
           var m = resp.data.message[0];
           if (m.type === 'HAPPENS') {
-            Channels.onEventHappens(channelId, function (channel, displayNotification) {
+            var users = m.eventUsers;
+            Channels.onEventHappens(channelId,  function (channel, displayNotification) {
               if (displayNotification) {
-                var textContent = "Event is happening! Go join your friends //TBD: list of others";
+                var textContent = "Event is happening! Go join your friends";
                 var actionName = "Go!";
-                $scope.showStartDialog(channel, textContent, actionName);
+                $scope.showStartDialog(channel, textContent, actionName, users);
               }
             });
           } else if (m.type === 'CANCELLED') {
@@ -150,12 +151,13 @@ angular.module('fussball.scheduler.channels', [])
         };
       });
     }
-    $scope.showStartDialog = function (channel, textContent, actionName) {
+    $scope.showStartDialog = function (channel, textContent, actionName, users) {
       var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
       var locals = {
         channel: channel,
         textContent: textContent,
-        actionName: actionName
+        actionName: actionName,
+        users : users
       }
       $mdDialog.show({
         controller: DialogController,
@@ -267,7 +269,8 @@ angular.module('fussball.scheduler.channels', [])
     };
   });
 
-function DialogController($scope, $mdDialog, channel, textContent, actionName) {
+function DialogController($scope, $mdDialog, channel, textContent, actionName, users) {
+  $scope.users = users? users : [];
   $scope.channel = channel;
   $scope.textContent = textContent;
   $scope.actionName = actionName;
