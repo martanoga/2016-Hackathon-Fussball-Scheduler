@@ -57,7 +57,7 @@ router.get('/authorization', function (req, res, next) {
             res.redirect('/loginAutodesk');
           } else {
             if (response2.statusCode === 200) {
-              setSessionUser(req, res, token, JSON.parse(response2.body).userId); //JSON.parse(response2.body).userName
+              setSessionUser(req, res, token, JSON.parse(response2.body));
             }
           }
         });
@@ -67,10 +67,14 @@ router.get('/authorization', function (req, res, next) {
 
 });
 
-var setSessionUser = function (req, res, token, userId) {
-  database.useOrCreateUser(userId, token);
+var setSessionUser = function (req, res, token, userData) {
+
+  var userId = userData.userId;
+  var userName = userData.firstName + ' ' + userData.lastName;
+  var userPhoto = userData.profileImages;
+
+  database.useOrCreateUser(userId, userName, userPhoto, token);
   res.status = 200;
-  //res.json({token: token});
   res.redirect('/#/token/' + token + '/' + userId + '/' + credentials.SUBSCRIBE_KEY);
 }
 
