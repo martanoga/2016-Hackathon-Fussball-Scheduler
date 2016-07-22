@@ -183,7 +183,9 @@ function getEventState( index ){
   var event = Data.Channels[index].event;
   var timeOutPassed = Date.now() - event.timeout < 0;
   var nofUsers = event.listOfUsers.length;
-  if( event.maxUsers<=nofUsers ){ 
+  if( event.state!=1){
+    return 'NOTSTARTED';
+  } else if( event.maxUsers<=nofUsers ){ 
     return 'HAPPENS';
   } else if( timeOutPassed ){
     return event.minUsers>nofUsers ? 'CANCELLED' : 'HAPPENS';
