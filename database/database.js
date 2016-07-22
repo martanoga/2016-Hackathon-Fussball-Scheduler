@@ -33,17 +33,17 @@ exports.getChannels = function (userId) {
 exports.getChannel = function (channelId) {
   readDatabase();
 
-  var index = _.findIndex(Data.Channels, { id: channelId });
-  if (index === -1) {
+  var channelIndex = _.findIndex(Data.Channels, { id: channelId });
+  if (channelIndex === -1) {
     return {};
   }
-  var item = Data.Channels[index];
+
+  var item = Data.Channels[channelIndex];
   return {
     id: item.id,
     name: item.name,
-    subscribed: usersChannels[item.id] !== undefined,
     eventInProgress: item.event.state,
-    joined: _.findIndex(item.event.listOfUsers, { userId }) != -1
+    joined: false
   };
 };
 
