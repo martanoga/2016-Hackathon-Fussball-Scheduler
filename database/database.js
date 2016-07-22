@@ -181,7 +181,7 @@ function getEventState( index ){
     return null;
   }
   var event = Data.Channels[index].event;
-  var timeOutPassed = Date.now() - event.timeout < 0;
+  var timeOutPassed = event.timeout - Date.now() < 0;
   var nofUsers = event.listOfUsers.length;
   if( event.state!=1){
     return 'NOTSTARTED';
