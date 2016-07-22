@@ -12,7 +12,6 @@ var Data = {};
 exports.getChannels = function (userId) {
   readDatabase();
   var index = _.findIndex(Data.Users, { id: userId });
-
   if (index === -1) {
     return {};
   }
@@ -31,6 +30,22 @@ exports.getChannels = function (userId) {
   return channels;
 };
 
+exports.getChannel = function (channelId) {
+  readDatabase();
+
+  var index = _.findIndex(Data.Channels, { id: channelId });
+  if (index === -1) {
+    return {};
+  }
+  var item = Data.Channels[index];
+  return {
+    id: item.id,
+    name: item.name,
+    subscribed: usersChannels[item.id] !== undefined,
+    eventInProgress: item.event.state,
+    joined: _.findIndex(item.event.listOfUsers, { userId }) != -1
+  };
+};
 
 exports.joinChannel = function (channelId, userId) {
   readDatabase();
@@ -125,7 +140,7 @@ exports.startEvent = function (userId, channelId, timeout) {
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
 
-  notifications.sendEvent(channelName, 'START');
+  notifications.sendEvent(channelName, JSON.stringify({type:'START'})); 
 
   console.log('event started');
   return true;
