@@ -5,6 +5,7 @@ exports.sendEvent = function (channelName, text) {
 
   var url = config.getADSKChannelPath() + '/' + channelName;
   var accessToken = global.token;
+  var body_ = JSON.stringify({message: text});
 
   request.post({
     url: url,
@@ -13,12 +14,7 @@ exports.sendEvent = function (channelName, text) {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify({
-      message: JSON.stringify({
-        type: text,
-        text: text
-      })
-    })
+    body: body_
   },
     function (error, response, body) {
       if (error) {
