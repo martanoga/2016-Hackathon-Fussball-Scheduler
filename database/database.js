@@ -196,10 +196,12 @@ function getEventUsers( index ){
     return [];
   }
 
-  return _.map(Data.Channels[index].listOfUsers, function (item) {
+  return _.map(Data.Channels[index].event.listOfUsers, function (item){ 
+    var userIndex = _.findIndex(Data.Users, { id: item });
+    var user = Data.Users[userIndex];
     return {
-      name:item.name,
-      photo:item.photo
+      name:user.name,
+      photo:user.photo
     };
   });
 }
@@ -207,13 +209,12 @@ function getEventUsers( index ){
 function closeFinishedEvent( index ) {
   if(index!=-1){
     var status = getEventStatus( index );
-    var evUsers = getEventUsers(index);
     if(status==='HAPPENS' || status==='CANCELLED'){
+      var evUsers = getEventUsers(index);
       Data.Channels[index].event.state = 0;
       Data.Channels[index].event.listOfUsers = [];
       Data.Channels[index].event.timeout = 0;
       Data.Channels[index].event.author = '';
-      notifications.sendEvent(Data.Channels[index].name, status);
       notifications.sendEvent(Data.Channels[index].name,JSON.stringify({type:status,eventUsers:evUsers }) );
     }
   }
@@ -226,11 +227,11 @@ exports.getDataBaseContent = function () {
 
 readDatabase();
 setInterval(function() { 
+  readDatabase();
   for( var i=0; i<Data.Channels.length; i++){
-    readDatabase();
     closeFinishedEvent(i);
-    saveDatabase();
   }
+  saveDatabase();
 }, 2000);
 
 
