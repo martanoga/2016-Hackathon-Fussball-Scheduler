@@ -1,6 +1,6 @@
 angular.module('fussball.scheduler.channels', [])
 
-  .controller('ChannelsController', function ($mdToast, $mdDialog, $http, $scope, channels, Channels, notifications, Notifications) {
+  .controller('ChannelsController', function ($mdMedia, $mdToast, $mdDialog, $http, $scope, channels, Channels, notifications, Notifications) {
     $scope.currentNavItem = 'page1';
     console.log('Hello from channels controller');
     $scope.channels = channels;
@@ -109,20 +109,25 @@ angular.module('fussball.scheduler.channels', [])
         data: { message: m }
       })
         .then(function (resp) {
-          var m = resp.data.message;
-          if (m.type === 'HAPPEN') {
-            Channels.onEventHappens(channelId, function (channel) {
-              $scope.displayToast(channel.name + " is happening!");
+          var m = resp.data.message[0];
+          if (m.type === 'HAPPENS') {
+            Channels.onEventHappens(channelId, function (channel, displayNotification) {
+              if (displayNotification) {
+                $scope.showStartDialog(channel);
+              }
             });
           } else if (m.type === 'CANCEL') {
             Channels.onEventCanceled(channelId, function (channel) {
               $scope.displayToast(channel.name + " is canceled!");
             });
           } else if (m.type === 'START') {
-            Channels.onEventStarted(channelId, function (channel) {
-              $scope.displayToast(channel.name + " started!", "JOIN", function () {
-                $scope.joinEvent(channel);
-              });
+            Channels.onEventStarted(channelId, function (channel, displayNotification) {
+              if (displayNotification) {
+                $scope.displayToast(channel.name + " started!", "JOIN", function () {
+                  $scope.joinEvent(channel);
+                });
+              }
+
             });
           }
         });
@@ -139,6 +144,25 @@ angular.module('fussball.scheduler.channels', [])
         };
       });
     }
+    $scope.showStartDialog = function (channel) {
+      var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+      $mdDialog.show({
+        controller: DialogController,
+        templateUrl: 'javascripts/channels/dialog.html',
+        parent: angular.element(document.body),
+        clickOutsideToClose: false,
+        fullscreen: useFullScreen,
+        locals: { channel: channel }
+      })
+        .then(function () {
+          console.log("GO");
+        });
+      $scope.$watch(function () {
+        return $mdMedia('xs') || $mdMedia('sm');
+      }, function (wantsFullScreen) {
+        $scope.customFullscreen = (wantsFullScreen === true);
+      });
+    };
 
 
   })
@@ -202,9 +226,8 @@ angular.module('fussball.scheduler.channels', [])
         for (var i = 0; i < channels.length; i++) {
           if (channels[i].id === channelId) {
             channels[i].eventInProgress = true;
-            channels[i].joined = false;
             console.log("Event started: ", channels[i].name);
-            callback(channels[i]);
+            callback(channels[i], !channels[i].joined);
           }
         }
       },
@@ -222,11 +245,19 @@ angular.module('fussball.scheduler.channels', [])
         for (var i = 0; i < channels.length; i++) {
           if (channels[i].id === channelId) {
             channels[i].eventInProgress = false;
+            var displayNotification = channels[i].joined;
             channels[i].joined = false;
             console.log("Event it happening: ", channels[i].name);
-            callback(channels[i]);
+            callback(channels[i], displayNotification);
           }
         }
       }
     };
   });
+
+function DialogController($scope, $mdDialog, channel) {
+  $scope.channel = channel;
+  $scope.go = function () {
+    $mdDialog.hide();
+  };
+}
