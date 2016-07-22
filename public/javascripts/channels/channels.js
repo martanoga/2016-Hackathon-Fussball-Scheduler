@@ -67,7 +67,7 @@ angular.module('fussball.scheduler.channels', [])
         $http({
           method: 'POST',
           url: '/api/channel/startevent',
-          data: { channelId: channel.id, timeout: result, maxUSer: 15 }
+          data: { channelId: channel.id, timeout: result }
         })
           .then(function (resp) {
             channel.eventInProgress = true;
