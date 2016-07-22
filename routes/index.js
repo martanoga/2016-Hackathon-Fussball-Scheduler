@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 
-var credentials = require('../credentials');
+var credentials = (process.env.AUTH_CLIENT_ID) ? undefined : require('../credentials');
 var config = require('../config');
 var database = require('../database/database.js');
 
