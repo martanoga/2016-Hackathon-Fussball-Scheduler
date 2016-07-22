@@ -122,8 +122,8 @@ exports.startEvent = function (userId, channelId, timeout, minUsers, maxUsers) {
   Data.Channels[channelIndex].event.state = 1;
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
-  Data.Channels[channelIndex].event.minUsers = minUsers,
-  Data.Channels[channelIndex].event.maxUsers = maxUsers,
+  Data.Channels[channelIndex].event.minUsers = minUsers ? minUsers : 0,
+  Data.Channels[channelIndex].event.maxUsers = maxUsers ? maxUsers : 10000,
   Data.Channels[channelIndex].event.listOfUsers = [];
   Data.Channels[channelIndex].event.listOfUsers.push(userId);
   saveDatabase();
