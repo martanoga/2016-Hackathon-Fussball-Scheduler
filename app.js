@@ -25,6 +25,6 @@ app.use('/api', api);
 //app.use('/users', users);
 
 startup.CheckChannel('fussball', 4, 4);
-//startup.CheckChannel('pizza', 1, 100);
+startup.CheckChannel('pizza', 1, 100);
 
 module.exports = app;
