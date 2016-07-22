@@ -3,7 +3,7 @@ var router = express.Router();
 var CryptoJS = require('crypto-js');
 
 var database = require('../database/database.js');
-var credentials = require('../credentials.js');
+var credentials = (process.env.AUTH_CLIENT_ID) ? undefined : require('../credentials.js');
 
 router.get('/channels', function (req, res, next) {
 

@@ -1,6 +1,6 @@
 var fs = require('fs');
 var database = require('./database/database.js');
-var credentials = require('./credentials.js');
+var credentials = (process.env.AUTH_CLIENT_ID) ? undefined : require('./credentials.js');
 var request = require('request');
 var Promise = require('bluebird');
 var config = require('./config.js')
