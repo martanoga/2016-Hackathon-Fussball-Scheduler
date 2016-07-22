@@ -48,11 +48,20 @@ exports.getChannel = function (channelId) {
   }
 
   var item = Data.Channels[channelIndex];
+
+  var subscribers = 0;
+  for (var k = 0; k < Data.Users.length; k++) {
+    if (Data.Users[k].channels[item.id] !== undefined) {
+      subscribers++;
+    }
+  }
+
   return {
     id: item.id,
     name: item.name,
     eventInProgress: item.event.state,
-    joined: false
+    joined: false,
+    subscribersCount: subscribers
   };
 };
 
