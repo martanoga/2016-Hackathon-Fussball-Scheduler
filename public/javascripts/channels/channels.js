@@ -172,11 +172,11 @@ angular.module('fussball.scheduler.channels', [])
         .then(function () {
           console.log("GO");
         });
-      $scope.$watch(function () {
-        return $mdMedia('xs') || $mdMedia('sm');
-      }, function (wantsFullScreen) {
-        $scope.customFullscreen = (wantsFullScreen === true);
-      });
+      // $scope.$watch(function () {
+      //   return $mdMedia('xs') || $mdMedia('sm');
+      // }, function (wantsFullScreen) {
+      //   $scope.customFullscreen = (wantsFullScreen === true);
+      // });
     };
 
 
