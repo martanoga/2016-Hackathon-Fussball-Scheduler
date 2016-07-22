@@ -118,7 +118,6 @@ exports.startEvent = function (userId, channelId, timeout) {
     return false;
   }
 
-  Data.Channels[channelIndex].event = {};
   Data.Channels[channelIndex].event.state = 1;
   Data.Channels[channelIndex].event.author = userId;
   Data.Channels[channelIndex].event.timeout = timeout;
