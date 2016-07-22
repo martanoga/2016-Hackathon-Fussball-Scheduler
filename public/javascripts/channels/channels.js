@@ -113,12 +113,18 @@ angular.module('fussball.scheduler.channels', [])
           if (m.type === 'HAPPENS') {
             Channels.onEventHappens(channelId, function (channel, displayNotification) {
               if (displayNotification) {
-                $scope.showStartDialog(channel);
+                var textContent = "Event is happening! Go join your friends //TBD: list of others";
+                var actionName = "Go!";
+                $scope.showStartDialog(channel, textContent, actionName);
               }
             });
           } else if (m.type === 'CANCEL') {
-            Channels.onEventCanceled(channelId, function (channel) {
-              $scope.displayToast(channel.name + " is canceled!");
+            Channels.onEventCanceled(channelId, function (channel, displayNotification) {
+              if (displayNotification) {
+                var textContent = "Event is not happening :(";
+                var actionName = "Close";
+                $scope.showStartDialog(channel, textContent, actionName);
+              }
             });
           } else if (m.type === 'START') {
             Channels.onEventStarted(channelId, function (channel, displayNotification) {
@@ -235,9 +241,10 @@ angular.module('fussball.scheduler.channels', [])
         for (var i = 0; i < channels.length; i++) {
           if (channels[i].id === channelId) {
             channels[i].eventInProgress = false;
+            var displayNotification = channels[i].joined;
             channels[i].joined = false;
             console.log("Event canceled: ", channels[i].name);
-            callback(channels[i]);
+            callback(channels[i], displayNotification);
           }
         }
       },
@@ -255,8 +262,10 @@ angular.module('fussball.scheduler.channels', [])
     };
   });
 
-function DialogController($scope, $mdDialog, channel) {
+function DialogController($scope, $mdDialog, channel, textContent, actionName) {
   $scope.channel = channel;
+  $scope.textContent = textContent;
+  $scopoe.actionName = actionName;
   $scope.go = function () {
     $mdDialog.hide();
   };
