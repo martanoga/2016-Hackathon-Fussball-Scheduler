@@ -7,12 +7,6 @@ var config = require('./config.js')
 
 
 
-function attachToken(xhr) {
-  xhr.setRequestHeader("Authorization", 'Bearer ' + accessToken);
-}
-
-
-
 var accessToken;
 
 function getToken() {
@@ -56,7 +50,6 @@ function getToken() {
 
 function checkChannel(channelName, minUsers, maxUsers) {
 
-  //$http.get(tokenUrl)
   getToken()
     .then(function (data) {
       accessToken = data;
@@ -79,6 +72,9 @@ function checkChannel(channelName, minUsers, maxUsers) {
         }
       );
     });
+    // .then(function (result) {
+    //   return result;
+    // });
 };
 
 
